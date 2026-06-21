@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram name="クラウド構成図(prod)" id="cloud-prod">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ===== Containers (背景・先に宣言してz順を下に) ===== -->
+        <mxCell id="awscloud" value="AWS Cloud (prod / ap-northeast-1)" style="sketch=0;points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#232F3E;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="40" width="740" height="560" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="vpc" value="VPC (10.0.0.0/16)" style="sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_vpc2;strokeColor=#8C4FFF;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#8C4FFF;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="400" y="110" width="430" height="450" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="subpub" value="Public Subnet" style="sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_public_subnet;strokeColor=#7AA116;fillColor=#E9F3E6;verticalAlign=top;align=left;spacingLeft=30;fontColor=#248814;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="430" y="160" width="370" height="110" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="subpri" value="Private Subnet" style="sketch=0;outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=0;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_private_subnet;strokeColor=#00A4A6;fillColor=#E6F6F7;verticalAlign=top;align=left;spacingLeft=30;fontColor=#147EBB;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="430" y="300" width="370" height="230" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="extbox" value="外部サービス / External APIs" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;strokeColor=#666666;fillColor=#F5F5F5;verticalAlign=top;align=left;spacingLeft=10;fontColor=#333333;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="360" y="630" width="740" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Icons ===== -->
+        <mxCell id="user" value="利用者&#10;(担当者/責任者 約4名)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.user;" vertex="1" parent="1">
+          <mxGeometry x="60" y="180" width="60" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="vercel" value="Vercel&#10;Next.js (Frontend)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=11;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="190" y="185" width="130" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="alb" value="ALB&#10;(Application Load Balancer)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_load_balancer;" vertex="1" parent="1">
+          <mxGeometry x="595" y="190" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ecs" value="ECS Fargate&#10;FastAPI + 自律Agent" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.fargate;" vertex="1" parent="1">
+          <mxGeometry x="475" y="340" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="rds" value="RDS&#10;PostgreSQL" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#527FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.rds;" vertex="1" parent="1">
+          <mxGeometry x="690" y="340" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ecr" value="ECR&#10;(イメージ)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_container_registry;" vertex="1" parent="1">
+          <mxGeometry x="880" y="150" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s3" value="S3&#10;開示文書/レポート" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.simple_storage_service;" vertex="1" parent="1">
+          <mxGeometry x="880" y="260" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="secrets" value="Secrets Manager&#10;/ SSM" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#DD344C;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.secrets_manager;" vertex="1" parent="1">
+          <mxGeometry x="880" y="370" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cw" value="CloudWatch&#10;(ログ/メトリクス)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch_2;" vertex="1" parent="1">
+          <mxGeometry x="880" y="480" width="50" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- External services -->
+        <mxCell id="edinet" value="EDINET API&#10;(有報/適時開示/大量保有)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="390" y="675" width="170" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="yfinance" value="YFinance&#10;(株価/時価総額)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="600" y="675" width="150" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="llm" value="Open Responses API&#10;(LLM / ReAct Agent)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="790" y="675" width="180" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- CI/CD & Error tracking -->
+        <mxCell id="gha" value="GitHub Actions&#10;(CI/CD・OIDC)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#24292E;fontSize=11;fontColor=#24292E;" vertex="1" parent="1">
+          <mxGeometry x="60" y="420" width="130" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="sentry" value="Sentry&#10;(エラー追跡)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#362D59;fontSize=11;fontColor=#362D59;" vertex="1" parent="1">
+          <mxGeometry x="60" y="520" width="130" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Edges ===== -->
+        <mxCell id="e_user_vercel" value="HTTPS" style="endArrow=block;html=1;fontSize=10;" edge="1" parent="1" source="user" target="vercel">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_vercel_alb" value="API (HTTPS)" style="endArrow=block;html=1;fontSize=10;" edge="1" parent="1" source="vercel" target="alb">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_alb_ecs" value="" style="endArrow=block;html=1;" edge="1" parent="1" source="alb" target="ecs">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ecs_rds" value="SQL" style="endArrow=block;html=1;fontSize=10;" edge="1" parent="1" source="ecs" target="rds">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ecs_s3" value="文書/レポート" style="endArrow=block;html=1;fontSize=10;dashed=1;" edge="1" parent="1" source="ecs" target="s3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ecs_secrets" value="資格情報取得" style="endArrow=block;html=1;fontSize=10;dashed=1;" edge="1" parent="1" source="ecs" target="secrets">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ecs_cw" value="ログ" style="endArrow=block;html=1;fontSize=10;dashed=1;" edge="1" parent="1" source="ecs" target="cw">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ecs_edinet" value="" style="endArrow=block;html=1;dashed=1;" edge="1" parent="1" source="ecs" target="edinet">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ecs_yf" value="" style="endArrow=block;html=1;dashed=1;" edge="1" parent="1" source="ecs" target="yfinance">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ecs_llm" value="推論" style="endArrow=block;html=1;fontSize=10;dashed=1;" edge="1" parent="1" source="ecs" target="llm">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_gha_ecr" value="image push" style="endArrow=block;html=1;fontSize=10;" edge="1" parent="1" source="gha" target="ecr">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ecr_ecs" value="deploy" style="endArrow=block;html=1;fontSize=10;dashed=1;" edge="1" parent="1" source="ecr" target="ecs">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_ecs_sentry" value="error" style="endArrow=block;html=1;fontSize=10;dashed=1;" edge="1" parent="1" source="ecs" target="sentry">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_vercel_sentry" value="error" style="endArrow=block;html=1;fontSize=10;dashed=1;" edge="1" parent="1" source="vercel" target="sentry">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 注記 -->
+        <mxCell id="note" value="注記:&#10;・SLA 99.9% / シングルAZ・最小構成(Phase1)&#10;・認可: 承認/却下=責任者のみ / 実行=担当者・責任者&#10;・IAM: ECSタスクは最小権限ロール、CI/CDはOIDC+専用ロール&#10;・IaC: Terraform (state: S3+DynamoDB)&#10;・dev環境はローカル(Docker Compose)" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFF8E1;strokeColor=#FBC02D;fontSize=10;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="610" width="300" height="140" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
