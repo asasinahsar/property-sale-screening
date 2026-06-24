@@ -225,6 +225,11 @@ fullstack-integration が自動実行：
 /git-commit
 ```
 
+## UI デザイン方針
+
+UI の実装・改善・レビューには必ず `.claude/skills/ui-ux-pro-max` を参照してください。
+Feature の UI コンポーネントを実装する際は、このスキルのデザインスタイル・カラーパレット・フォントペアリングを基準にします。
+
 ## Next.js 特有のルール
 
 ### Server / Client Component の使い分け

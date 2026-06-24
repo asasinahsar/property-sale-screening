@@ -1,7 +1,13 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.v1.endpoints import auth, users
 from app.core.config import settings
+from app.core.database import AsyncSessionLocal
+from app.core.dependencies import get_db
+from app.repositories.user_repository import UserRepository
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -18,9 +24,35 @@ app.add_middleware(
 )
 
 
+app.include_router(auth.router)
+app.include_router(users.router)
+
+
 @app.get("/api/v1/health", tags=["Health"])
 async def health_check():
     return {"status": "healthy", "version": settings.APP_VERSION}
+
+
+@app.get("/api/v1/db-test", tags=["Health"])
+async def db_test():
+    """DB 接続テスト"""
+    try:
+        async with AsyncSessionLocal() as session:
+            result = await session.execute(text("SELECT 1"))
+            return {"status": "Database connected", "result": result.scalar()}
+    except Exception as e:
+        return {"status": "Database connection failed", "error": str(e)}
+
+
+@app.get("/api/v1/db-schema-test", tags=["Health"])
+async def db_schema_test(session: AsyncSession = Depends(get_db)):
+    """スキーマ確認テスト：users テーブルが存在するか"""
+    try:
+        repo = UserRepository(session)
+        users = await repo.list(limit=1)
+        return {"status": "Schema OK", "users_table_exists": True, "count": len(users)}
+    except Exception as e:
+        return {"status": "Schema error", "error": str(e)}
 
 
 @app.get("/")

@@ -6,7 +6,7 @@ dependencies = [
     "fastapi==0.104.1",
     "uvicorn[standard]==0.24.0",
     "python-dotenv==1.0.0",
-    "pydantic==2.5.0",
+    "pydantic[email]==2.5.0",
     "pydantic-settings==2.1.0",
     "sqlalchemy==2.0.23",
     "psycopg[binary]==3.1.13",
@@ -40,3 +40,8 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 88
 target-version = "py311"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.1.6",
+]

@@ -4,7 +4,7 @@ export default {
       target: '../backend/openapi.json',
     },
     output: {
-      target: './src/services/api/generated.ts',
+      target: './src/shared/api/generated/',
       client: 'fetch',
       httpClient: 'fetch',
       mutator: {
