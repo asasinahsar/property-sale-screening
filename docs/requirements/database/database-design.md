@@ -36,6 +36,8 @@
 | hitl_labels | 当たり/外れラベル（学習用） | 69 | Phase2 |
 | watchlist_items | ウォッチリスト・通知条件 | 71–73 | Phase2 |
 | notifications | 通知履歴 | 74–77 | Phase2 |
+| work_logs | 工数ログ（効果検証・手入力） | 78–83 | Phase1 |
+| kpi_snapshots | 効果検証KPIスナップショット（導出＋集計） | 84–91 | Phase1 |
 
 ## ER図
 
@@ -47,6 +49,7 @@ erDiagram
     users ||--o{ generated_files : "generates"
     users ||--o{ hitl_labels : "labels"
     users ||--o{ watchlist_items : "owns"
+    users ||--o{ work_logs : "records"
 
     companies ||--o{ financial_data : "has"
     companies ||--o{ documents : "discloses"
@@ -183,6 +186,22 @@ erDiagram
         timestamptz sent_at
         boolean is_read
     }
+    work_logs {
+        uuid id PK
+        uuid user_id FK
+        string task_type
+        int duration_min
+        date logged_on
+    }
+    kpi_snapshots {
+        uuid id PK
+        date period_from
+        date period_to
+        numeric universe_coverage
+        numeric traceability_rate
+        numeric reproducibility_score
+        numeric workload_reduction_rate
+    }
 ```
 
 ## テーブル詳細
@@ -284,9 +303,13 @@ erDiagram
 | id | uuid | PK | 主キー |
 | triggered_by | uuid | FK→users.id | 実行ユーザー（担当者/責任者） |
 | status | enum(running, success, failed) | NOT NULL | 実行ステータス |
+| is_current | boolean | NOT NULL DEFAULT false | 現在の有効スコアセットか（常に最大1件がtrue） |
 | started_at | timestamptz | NOT NULL | 開始日時 |
 | finished_at | timestamptz | NULL | 終了日時 |
 | duration_ms | integer | NULL | 所要時間 |
+
+> **現在値の定義**: スコアリング実行が `status=success` で完了した時、当該runを `is_current=true`・他の全runを `false` に**原子的更新**（トランザクション内で一括更新し、常に最大1件のみtrue）。
+> ランキング・企業詳細・KPI・母集団カバレッジが参照する `scoring_results` は、**`is_current=true` の実行に紐づくもの**に限定する。
 
 ### scoring_results
 **目的**: 実行×企業のスコア・確信度・AI判定（書込集中→索引最小化）
@@ -335,6 +358,8 @@ erDiagram
 | approved_by | uuid | FK→users.id, NULL | 承認/却下した責任者 |
 | approved_at | timestamptz | NULL | 承認/却下日時 |
 | 制約 | — | UNIQUE(company_id) | 同一企業の重複登録を抑止 |
+
+> **前提**: `UNIQUE(company_id)` は **部内共有の単一ロングリスト**前提（担当者別リストは持たず、部で1つのリストを共有）。担当者ごとに別リストを持たせる業務要件に変わった場合は、`UNIQUE(company_id, owner_id)` 等へ制約を見直す。
 
 ### generated_files
 **目的**: エクスポート/レポート成果物（実体はS3）
@@ -397,6 +422,39 @@ erDiagram
 | sent_at | timestamptz | NOT NULL | 送出日時 |
 | is_read | boolean | NOT NULL DEFAULT false | 既読フラグ |
 
+### work_logs
+**目的**: 工数ログ（効果検証の工数削減を計測する手入力データ）
+
+| カラム | 型 | 制約 | 説明 |
+|-------|-----|------|------|
+| id | uuid | PK | 主キー |
+| user_id | uuid | FK→users.id, NOT NULL | 記録者 |
+| task_type | enum(primary_screening, deep_dive, report, other) | NOT NULL | タスク種別 |
+| duration_min | integer | NOT NULL | 所要時間（分） |
+| screening_run_id | uuid | FK→screening_runs.id, NULL | 紐づく実行（任意） |
+| period_label | varchar(50) | NULL | 対象期間ラベル（実行に紐づかない場合） |
+| logged_on | date | NOT NULL | 記録日 |
+| created_at | timestamptz | DEFAULT now() | 作成日時 |
+
+### kpi_snapshots
+**目的**: 効果検証KPIの算出結果（導出＋集計のスナップショット）
+
+| カラム | 型 | 制約 | 説明 |
+|-------|-----|------|------|
+| id | uuid | PK | 主キー |
+| period_from | date | NOT NULL | 集計対象期間（開始） |
+| period_to | date | NOT NULL | 集計対象期間（終了） |
+| universe_coverage | numeric(5,2) | NULL | 母集団カバレッジ率（is_universe×scoring_resultsから導出） |
+| traceability_rate | numeric(5,2) | NULL | トレース可能率（qualitative_signals/documentsから導出） |
+| avg_structure_score | numeric(5,2) | NULL | 平均構造スコア（導出） |
+| reproducibility_score | numeric(5,2) | NULL | 再現性スコア（同一入力の上位リスト一致率） |
+| total_workload_min | integer | NULL | work_logs集計工数（分） |
+| workload_reduction_rate | numeric(5,2) | NULL | As-Is(500h)比の削減率 |
+| created_at | timestamptz | DEFAULT now() | 作成日時 |
+
+> 導出系（coverage/traceability/avg/reproducibility）は既存テーブルから集計して保存（参照高速化のためのスナップショット）。工数のみ `work_logs` の手入力を集計。
+> **生成トリガー**: `kpi_snapshots` は **スクリーニング実行完了フック**（`screening_runs` が success 確定時）または**スケジュールバッチ**で生成する（API非公開）。画面の `GET /api/kpi/effectiveness` は最新スナップショットの**読み取り専用**で、参照時に書き込みは行わない。
+
 ## インデックス方針
 
 | テーブル | インデックス | 理由 |
@@ -406,10 +464,13 @@ erDiagram
 | companies | UNIQUE(securities_code), INDEX(industry) | 突合・業種フィルタ/z-score |
 | financial_data | UNIQUE(company_id, as_of_date) | 最新基準日の取得 |
 | qualitative_signals | INDEX(company_id), INDEX(document_id) | 詳細表示・出典トレース |
-| scoring_results | UNIQUE(screening_run_id, company_id), INDEX(total_score DESC) | ランキング並び順（書込集中のため索引は最小限） |
+| screening_runs | INDEX(is_current, status) | 現在の有効実行の特定 |
+| scoring_results | UNIQUE(screening_run_id, company_id), INDEX(screening_run_id), INDEX(total_score DESC) | 現在実行の結果取得・ランキング並び順（書込集中のため索引は最小限） |
 | events | INDEX(occurred_at), INDEX(company_id) | 直近7日抽出 |
 | longlist_items | UNIQUE(company_id), INDEX(status) | 重複抑止・ステータス絞り込み |
 | watchlist_items | UNIQUE(user_id, company_id) | 重複ウォッチ抑止 |
+| work_logs | INDEX(logged_on), INDEX(user_id) | 期間集計・記録者別集計 |
+| kpi_snapshots | INDEX(period_from, period_to) | 期間別のKPI参照 |
 
 ## 正規化の検討
 

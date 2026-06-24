@@ -131,7 +131,7 @@
         </mxCell>
 
         <!-- 注記 -->
-        <mxCell id="note" value="注記:&#10;・SLA 99.9% / シングルAZ・最小構成(Phase1)&#10;・認可: 承認/却下=責任者のみ / 実行=担当者・責任者&#10;・IAM: ECSタスクは最小権限ロール、CI/CDはOIDC+専用ロール&#10;・IaC: Terraform (state: S3+DynamoDB)&#10;・dev環境はローカル(Docker Compose)" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFF8E1;strokeColor=#FBC02D;fontSize=10;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
+        <mxCell id="note" value="注記:&#10;・SLA 99.9% / シングルAZ・最小構成(Phase1)&#10;・認可: 承認/却下=責任者のみ / 実行=担当者・責任者&#10;・IAM: ECSタスクは最小権限ロール、CI/CDはOIDC+専用ロール&#10;・IaC: Terraform (state: S3+DynamoDB)&#10;・dev環境はローカル(Docker Compose)&#10;・環境/可用性はPhase1の意図的トレードオフ(stgなし・シングルAZ)。Phase2でstg追加・マルチAZ化" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fillColor=#FFF8E1;strokeColor=#FBC02D;fontSize=10;spacingLeft=8;spacingTop=6;" vertex="1" parent="1">
           <mxGeometry x="40" y="610" width="300" height="140" as="geometry"/>
         </mxCell>
 
