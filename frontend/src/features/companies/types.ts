@@ -4,7 +4,7 @@
 
 export type SortBy = 'total_score' | 'structure_score' | 'event_score'
 
-export type ConfidenceLevel = 'HIGH' | 'MID' | 'LOW'
+export type ConfidenceLevel = 'high' | 'mid' | 'low'
 
 export interface CompanyFilters {
   industry?: string
@@ -17,17 +17,18 @@ export interface CompanyFilters {
 }
 
 export interface CompanyRankingItemSchema {
-  id: string
+  company_id: string
   name: string
   securities_code: string
   industry: string
+  market_cap: number | null
   total_score: number
   structure_score: number
   event_score: number
-  unrealized_gain: number
+  event_boost: number | null
+  unrealized_gain: number | null
   confidence: ConfidenceLevel
   has_event: boolean
-  rank: number
 }
 
 export interface CompanyListResponse {

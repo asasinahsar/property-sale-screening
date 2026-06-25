@@ -31,9 +31,9 @@ const CONFIDENCE_COLORS: Record<
   ConfidenceLevel,
   'success' | 'warning' | 'error'
 > = {
-  HIGH: 'success',
-  MID: 'warning',
-  LOW: 'error',
+  high: 'success',
+  mid: 'warning',
+  low: 'error',
 }
 
 function fmt(value: number, digits = 1): string {
@@ -45,7 +45,7 @@ function fmt(value: number, digits = 1): string {
 // ---------------------------------------------------------------------------
 
 const COLUMNS = [
-  '順位',
+  '#',
   '企業名（証券コード）',
   '業種',
   '総合スコア',
@@ -113,9 +113,9 @@ export function CompanyRankingTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item) => (
-            <TableRow key={item.id} hover>
-              <TableCell>{item.rank}</TableCell>
+          {items.map((item, index) => (
+            <TableRow key={item.company_id} hover>
+              <TableCell>{index + 1}</TableCell>
               <TableCell>
                 {item.name}
                 <Box
@@ -130,7 +130,7 @@ export function CompanyRankingTable({
               <TableCell align="right">{fmt(item.structure_score)}</TableCell>
               <TableCell align="right">{fmt(item.event_score)}</TableCell>
               <TableCell align="right">
-                {item.unrealized_gain.toLocaleString()}
+                {item.unrealized_gain != null ? item.unrealized_gain.toLocaleString() : '—'}
               </TableCell>
               <TableCell>
                 <Chip
