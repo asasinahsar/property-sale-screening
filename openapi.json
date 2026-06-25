@@ -1,0 +1,1051 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Property Sale Screening API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Get Me",
+        "operationId": "get_me_api_v1_auth_me_get",
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Refresh",
+        "operationId": "refresh_api_v1_auth_refresh_post",
+        "parameters": [
+          {
+            "name": "refresh_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Refresh Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get Me",
+        "operationId": "get_me_api_v1_users_me_get",
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dashboard/kpi": {
+      "get": {
+        "tags": [
+          "dashboard"
+        ],
+        "summary": "Get Dashboard Kpi",
+        "description": "KPI \u96c6\u8a08\uff08is_current=True \u306e\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u7d50\u679c\u304b\u3089\u96c6\u8a08\uff09.",
+        "operationId": "get_dashboard_kpi_api_v1_dashboard_kpi_get",
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardKpiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/screenings": {
+      "post": {
+        "tags": [
+          "screenings"
+        ],
+        "summary": "Trigger Screening",
+        "description": "\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u3092\u975e\u540c\u671f\u3067\u5b9f\u884c\u958b\u59cb\u3059\u308b\uff08202 Accepted\uff09.",
+        "operationId": "trigger_screening_api_v1_screenings_post",
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScreeningTriggerResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/screenings/{run_id}": {
+      "get": {
+        "tags": [
+          "screenings"
+        ],
+        "summary": "Get Screening Status",
+        "description": "\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u5b9f\u884c\u72b6\u614b\u3092\u53d6\u5f97\u3059\u308b.",
+        "operationId": "get_screening_status_api_v1_screenings__run_id__get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScreeningRunResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/companies": {
+      "get": {
+        "tags": [
+          "companies"
+        ],
+        "summary": "Get Companies",
+        "description": "\u4f01\u696d\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7\u3092\u53d6\u5f97\u3059\u308b\uff08is_current=True \u306e\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u7d50\u679c\u304b\u3089\uff09.",
+        "operationId": "get_companies_api_v1_companies_get",
+        "parameters": [
+          {
+            "name": "industry",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u696d\u7a2e\u30d5\u30a3\u30eb\u30bf",
+              "title": "Industry"
+            },
+            "description": "\u696d\u7a2e\u30d5\u30a3\u30eb\u30bf"
+          },
+          {
+            "name": "min_score",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u6700\u4f4e\u30b9\u30b3\u30a2",
+              "title": "Min Score"
+            },
+            "description": "\u6700\u4f4e\u30b9\u30b3\u30a2"
+          },
+          {
+            "name": "max_score",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u6700\u9ad8\u30b9\u30b3\u30a2",
+              "title": "Max Score"
+            },
+            "description": "\u6700\u9ad8\u30b9\u30b3\u30a2"
+          },
+          {
+            "name": "has_event",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u30a4\u30d9\u30f3\u30c8\u30b7\u30b0\u30ca\u30eb\u306e\u6709\u7121",
+              "title": "Has Event"
+            },
+            "description": "\u30a4\u30d9\u30f3\u30c8\u30b7\u30b0\u30ca\u30eb\u306e\u6709\u7121"
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "\u30bd\u30fc\u30c8\u30ad\u30fc",
+              "default": "total_score",
+              "title": "Sort By"
+            },
+            "description": "\u30bd\u30fc\u30c8\u30ad\u30fc"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "\u30da\u30fc\u30b8\u756a\u53f7\uff081\u59cb\u307e\u308a\uff09",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "\u30da\u30fc\u30b8\u756a\u53f7\uff081\u59cb\u307e\u308a\uff09"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "description": "1\u30da\u30fc\u30b8\u3042\u305f\u308a\u306e\u4ef6\u6570",
+              "default": 20,
+              "title": "Page Size"
+            },
+            "description": "1\u30da\u30fc\u30b8\u3042\u305f\u308a\u306e\u4ef6\u6570"
+          },
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Alb Health Check",
+        "description": "ALB \u7528\u30d8\u30eb\u30b9\u30c1\u30a7\u30c3\u30af\uff08\u8a8d\u8a3c\u4e0d\u8981\uff09",
+        "operationId": "alb_health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health Check",
+        "operationId": "health_check_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/db-test": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Db Test",
+        "description": "DB \u63a5\u7d9a\u30c6\u30b9\u30c8",
+        "operationId": "db_test_api_v1_db_test_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/db-schema-test": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Db Schema Test",
+        "description": "\u30b9\u30ad\u30fc\u30de\u78ba\u8a8d\u30c6\u30b9\u30c8\uff1ausers \u30c6\u30fc\u30d6\u30eb\u304c\u5b58\u5728\u3059\u308b\u304b",
+        "operationId": "db_schema_test_api_v1_db_schema_test_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CompanyListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyRankingItemSchema"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "\u4f01\u696d\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total",
+            "description": "\u7dcf\u4ef6\u6570"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Page",
+            "description": "\u73fe\u5728\u30da\u30fc\u30b8\u756a\u53f7\uff081\u59cb\u307e\u308a\uff09"
+          },
+          "page_size": {
+            "type": "integer",
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Page Size",
+            "description": "1\u30da\u30fc\u30b8\u3042\u305f\u308a\u306e\u4ef6\u6570"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "page",
+          "page_size"
+        ],
+        "title": "CompanyListResponse",
+        "description": "\u4f01\u696d\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7\u30ec\u30b9\u30dd\u30f3\u30b9\uff08\u30da\u30fc\u30b8\u30cd\u30fc\u30b7\u30e7\u30f3\u4ed8\u304d\uff09."
+      },
+      "CompanyRankingItemSchema": {
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Company Id",
+            "description": "\u4f01\u696dID"
+          },
+          "securities_code": {
+            "type": "string",
+            "maxLength": 10,
+            "minLength": 1,
+            "title": "Securities Code",
+            "description": "\u8a3c\u5238\u30b3\u30fc\u30c9"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name",
+            "description": "\u4f01\u696d\u540d"
+          },
+          "industry": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Industry",
+            "description": "\u696d\u7a2e"
+          },
+          "market_cap": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Market Cap",
+            "description": "\u6642\u4fa1\u7dcf\u984d\uff08\u5104\u5186\uff09"
+          },
+          "total_score": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Total Score",
+            "description": "\u7d71\u5408\u7dcf\u5408\u30b9\u30b3\u30a2"
+          },
+          "structure_score": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Structure Score",
+            "description": "\u69cb\u9020\u30b9\u30b3\u30a2\uff080\u2013100\uff09"
+          },
+          "event_score": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Event Score",
+            "description": "\u30a4\u30d9\u30f3\u30c8\u30b9\u30b3\u30a2\uff080\u2013100\uff09"
+          },
+          "event_boost": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 2.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Boost",
+            "description": "\u30a4\u30d9\u30f3\u30c8\u30d6\u30fc\u30b9\u30c8\u4fc2\u6570"
+          },
+          "confidence": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ConfidenceLevelEnum"
+              }
+            ],
+            "description": "\u4fe1\u983c\u5ea6\u30ec\u30d9\u30eb"
+          },
+          "unrealized_gain": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unrealized Gain",
+            "description": "\u542b\u307f\u76ca\uff08\u5104\u5186\uff09"
+          },
+          "has_event": {
+            "type": "boolean",
+            "title": "Has Event",
+            "description": "\u30a4\u30d9\u30f3\u30c8\u30b7\u30b0\u30ca\u30eb\u304c1\u4ef6\u4ee5\u4e0a\u3042\u308b\u304b"
+          }
+        },
+        "type": "object",
+        "required": [
+          "company_id",
+          "securities_code",
+          "name",
+          "industry",
+          "total_score",
+          "structure_score",
+          "event_score",
+          "confidence",
+          "has_event"
+        ],
+        "title": "CompanyRankingItemSchema",
+        "description": "\u4f01\u696d\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7\u306e1\u30a8\u30f3\u30c8\u30ea."
+      },
+      "ConfidenceLevelEnum": {
+        "type": "string",
+        "enum": [
+          "high",
+          "mid",
+          "low"
+        ],
+        "title": "ConfidenceLevelEnum",
+        "description": "\u7d71\u5408\u30b9\u30b3\u30a2\u306e\u4fe1\u983c\u5ea6\u30ec\u30d9\u30eb."
+      },
+      "DashboardKpiResponse": {
+        "properties": {
+          "total_companies": {
+            "type": "integer",
+            "title": "Total Companies"
+          },
+          "high_score_companies": {
+            "type": "integer",
+            "title": "High Score Companies"
+          },
+          "avg_score": {
+            "type": "number",
+            "title": "Avg Score"
+          },
+          "event_count": {
+            "type": "integer",
+            "title": "Event Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_companies",
+          "high_score_companies",
+          "avg_score",
+          "event_count"
+        ],
+        "title": "DashboardKpiResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LoginRequest": {
+        "properties": {
+          "login_email": {
+            "type": "string",
+            "format": "email",
+            "title": "Login Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "login_email",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "MeResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "login_email": {
+            "type": "string",
+            "title": "Login Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "login_email",
+          "role"
+        ],
+        "title": "MeResponse"
+      },
+      "RunStatusEnum": {
+        "type": "string",
+        "enum": [
+          "running",
+          "success",
+          "failed"
+        ],
+        "title": "RunStatusEnum",
+        "description": "\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u5b9f\u884c\u30b9\u30c6\u30fc\u30bf\u30b9."
+      },
+      "ScreeningRunResponse": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Run Id",
+            "description": "\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u5b9f\u884cID"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunStatusEnum"
+              }
+            ],
+            "description": "\u5b9f\u884c\u30b9\u30c6\u30fc\u30bf\u30b9"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Started At",
+            "description": "\u958b\u59cb\u65e5\u6642"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At",
+            "description": "\u5b8c\u4e86\u65e5\u6642"
+          },
+          "progress": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Progress",
+            "description": "\u9032\u6357\u7387\uff080\u2013100 %\uff09"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "status",
+          "started_at",
+          "progress"
+        ],
+        "title": "ScreeningRunResponse",
+        "description": "\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u5b9f\u884c\u72b6\u614b\u30ec\u30b9\u30dd\u30f3\u30b9."
+      },
+      "ScreeningTriggerResponse": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Run Id",
+            "description": "\u767a\u884c\u3055\u308c\u305f\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u5b9f\u884cID"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunStatusEnum"
+              }
+            ],
+            "description": "\u8d77\u52d5\u76f4\u5f8c\u306e\u30b9\u30c6\u30fc\u30bf\u30b9\uff08\u5e38\u306b running\uff09",
+            "default": "running"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Message",
+            "description": "\u8d77\u52d5\u78ba\u8a8d\u30e1\u30c3\u30bb\u30fc\u30b8"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "message"
+        ],
+        "title": "ScreeningTriggerResponse",
+        "description": "\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u8d77\u52d5\u30ec\u30b9\u30dd\u30f3\u30b9."
+      },
+      "UserResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "login_email": {
+            "type": "string",
+            "title": "Login Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "failed_login_count": {
+            "type": "integer",
+            "title": "Failed Login Count"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "login_email",
+          "role",
+          "failed_login_count",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "UserResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

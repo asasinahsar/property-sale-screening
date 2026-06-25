@@ -1,4 +1,6 @@
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
+
+import { LoginForm } from '@/features/auth'
 
 export default function LoginPage() {
   return (
@@ -11,13 +13,10 @@ export default function LoginPage() {
         bgcolor: 'grey.100',
       }}
     >
-      <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 2, boxShadow: 1, width: 400 }}>
-        <Typography variant="h5" fontWeight="bold" mb={3}>
-          ログイン
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          ログインフォームは Slice 1 以降で実装されます
-        </Typography>
+      <Box
+        sx={{ p: 4, bgcolor: 'white', borderRadius: 2, boxShadow: 1, width: 400 }}
+      >
+        <LoginForm />
       </Box>
     </Box>
   )

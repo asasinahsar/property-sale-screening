@@ -334,6 +334,39 @@ export function ApplicationList() {
 | **frontend-test-writer** | 🔴 RED: Frontend テスト作成 |
 | **frontend-component-builder** | 🟢 GREEN: UI コンポーネント実装（Next.js Client Component） |
 
+## 実装完了時の応答ルール
+
+`/fullstack-integration` でスライスの実装が完了したとき、**回答の末尾に必ず以下の確認チェックリストを出力すること**。CLAUDE.md には記録しない。
+
+### 出力するチェックリストの形式
+
+```
+## 実装後の確認チェックリスト
+
+### 自動確認（コマンド）
+- [ ] `cd backend && uv run pytest tests/ -v` — 全テスト PASS
+- [ ] `cd backend && uv run python scripts/export_openapi.py -o ../openapi.json` — OpenAPI 出力
+- [ ] `cd frontend && npm run orval` — orval 再生成
+- [ ] `cd frontend && npm run typecheck` — 型エラーなし
+- [ ] `cd frontend && npm run lint` — Lint エラーなし
+- [ ] `cd frontend && npm test` — フロントエンドテスト PASS
+
+### 手動動作確認
+- [ ] `docker-compose up -d` で PostgreSQL 起動
+- [ ] `cd backend && uv run alembic upgrade head` でマイグレーション実行
+- [ ] バックエンド起動: `cd backend && uv run uvicorn app.main:app --reload`
+- [ ] フロントエンド起動: `cd frontend && npm run dev`
+- [ ] ブラウザで http://localhost:3000 → ログイン → 実装した画面・機能を確認
+
+### 実装済みエンドポイント
+{実装したエンドポイントを表形式で列挙}
+
+### 既知の注意事項・未完成事項
+{既知の制限・TODO があれば列挙}
+```
+
+---
+
 ## 困ったときは
 
 - **VSA について**: `.claude/rules/vsa-guide.md`

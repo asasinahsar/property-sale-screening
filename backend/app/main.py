@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.endpoints import auth, users
+from app.api.v1.endpoints import auth, companies, dashboard, screenings, users
 from app.core.config import settings
 from app.core.database import AsyncSessionLocal
 from app.core.dependencies import get_db
@@ -26,6 +26,15 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(dashboard.router)
+app.include_router(screenings.router)
+app.include_router(companies.router)
+
+
+@app.get("/health", tags=["Health"])
+async def alb_health_check():
+    """ALB 用ヘルスチェック（認証不要）"""
+    return {"status": "healthy"}
 
 
 @app.get("/api/v1/health", tags=["Health"])

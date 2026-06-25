@@ -4,9 +4,11 @@ from typing import Optional
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.schemas.auth import LoginRequest
+from app.api.v1.dependencies.auth import get_current_user
+from app.api.v1.schemas.auth import LoginRequest, MeResponse
 from app.core.config import settings
 from app.core.dependencies import get_db
+from app.models.user import User
 from app.core.security import (
     create_access_token,
     create_refresh_token,
@@ -92,6 +94,11 @@ async def login(
         "message": "Login successful",
         "user": {"id": str(user.id), "role": user.role},
     }
+
+
+@router.get("/me", response_model=MeResponse)
+async def get_me(current_user: User = Depends(get_current_user)):
+    return current_user
 
 
 @router.post("/logout")
