@@ -7,6 +7,8 @@ from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.dependencies.auth import get_current_user
+from app.api.v1.dependencies.search import get_company_search_service
+from app.api.v1.schemas.company_search import CompanySearchResponse
 from app.api.v1.schemas.company_detail import (
     CompanyDetailSchema,
     DocumentSummarySchema,
@@ -26,13 +28,19 @@ from app.models.company import Company, QualitativeSignal
 from app.models.screening import ScreeningRun, ScoringResult
 from app.models.user import User
 from app.repositories.company_detail_repository import CompanyDetailRepository
+from app.services.company_search_service import CompanySearchService
 from app.services.report_service import ReportService
 
 router = APIRouter(prefix="/api/v1/companies", tags=["companies"])
 
 
-@router.get("", response_model=CompanyListResponse)
+@router.get("", response_model=CompanySearchResponse)
 async def get_companies(
+    q: str | None = Query(
+        None, description="自然言語検索クエリ（最大200字）。LLM で条件抽出"
+    ),
+    company_name: str | None = Query(None, description="企業名（完全一致）"),
+    securities_code: str | None = Query(None, description="証券コード（完全一致）"),
     industry: str | None = Query(None, description="業種フィルタ"),
     min_score: float | None = Query(None, description="最低スコア"),
     max_score: float | None = Query(None, description="最高スコア"),
@@ -42,8 +50,24 @@ async def get_companies(
     page_size: int = Query(20, ge=1, le=200, description="1ページあたりの件数"),
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> CompanyListResponse:
-    """企業ランキング一覧を取得する（is_current=True のスクリーニング結果から）."""
+    search_service: CompanySearchService = Depends(get_company_search_service),
+) -> CompanySearchResponse:
+    """企業ランキング一覧 / 検索を取得する（is_current=True のスクリーニング結果から）.
+
+    - q / company_name / securities_code が指定された場合は検索サービスに委譲する。
+    - いずれも無い場合は従来のランキング一覧を返す。
+    """
+    if q is not None or company_name is not None or securities_code is not None:
+        return await search_service.search(
+            q=q,
+            company_name=company_name,
+            securities_code=securities_code,
+            industry=industry,
+            sort_by=sort_by,
+            page=page,
+            page_size=page_size,
+        )
+
     # is_current=True かつ success の run_id を取得
     run_stmt = (
         select(ScreeningRun.id)

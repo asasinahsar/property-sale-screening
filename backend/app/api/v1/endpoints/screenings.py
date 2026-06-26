@@ -33,6 +33,7 @@ from app.repositories.screening_repository import (
     ScoringResultRepository,
 )
 from app.services.event_scoring import EventScoringService
+from app.services.kpi_service import KpiService
 from app.services.integration_scoring import IntegrationScoringService
 from app.services.structure_scoring import StructureScoringService
 
@@ -179,6 +180,14 @@ async def _run_scoring_pipeline(run_id: uuid.UUID) -> None:
             # 6. 一括保存 → run を current に
             await result_repo.bulk_create(scoring_results)
             await run_repo.set_current(run_id)
+
+            # 7. 効果検証 KPI スナップショットを生成（完了フック）
+            try:
+                kpi_service = KpiService(session)
+                await kpi_service.generate_snapshot(run_id)
+            except Exception:
+                # スナップショット生成失敗はスクリーニング自体を失敗させない
+                pass
 
         except Exception as e:
             try:

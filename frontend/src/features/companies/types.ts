@@ -38,6 +38,37 @@ export interface CompanyListResponse {
   page_size: number
 }
 
+export interface SearchConditionSchema {
+  unrealized_gain_min: number | null
+  unrealized_gain_max: number | null
+  region: string | null
+  industry: string | null
+  pbr_max: number | null
+  pbr_min: number | null
+  structure_score_min: number | null
+  company_name: string | null
+  securities_code: string | null
+}
+
+export interface CompanySearchResponse {
+  items: CompanyRankingItemSchema[]
+  total: number
+  page: number
+  page_size: number
+  search_summary: string | null
+  extracted_filters: SearchConditionSchema | null
+}
+
+/** SearchBox からの検索条件（companies API への検索パラメータ） */
+export interface CompanySearchParams {
+  q?: string
+  companyName?: string
+  securitiesCode?: string
+  sortBy?: SortBy
+  page?: number
+  pageSize?: number
+}
+
 export type ScreeningStatus = 'pending' | 'running' | 'success' | 'failed'
 
 export interface ScreeningRunResponse {

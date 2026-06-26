@@ -8,6 +8,7 @@ from app.api.v1.endpoints import (
     companies,
     dashboard,
     files,
+    kpi,
     longlist,
     screenings,
     users,
@@ -39,6 +40,7 @@ app.include_router(screenings.router)
 app.include_router(companies.router)
 app.include_router(files.router)
 app.include_router(longlist.router)
+app.include_router(kpi.router)
 
 
 @app.get("/health", tags=["Health"])

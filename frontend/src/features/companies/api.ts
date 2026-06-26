@@ -12,6 +12,8 @@ import type { UseQueryOptions } from '@tanstack/react-query'
 import type {
   CompanyFilters,
   CompanyListResponse,
+  CompanySearchParams,
+  CompanySearchResponse,
   ScreeningRunResponse,
   TriggerScreeningResponse,
 } from './types'
@@ -27,8 +29,26 @@ export const companyKeys = {
   all: ['companies'] as const,
   list: (filters?: Partial<CompanyFilters>) =>
     [...companyKeys.all, 'list', filters] as const,
+  search: (params?: CompanySearchParams) =>
+    [...companyKeys.all, 'search', params] as const,
   screeningStatus: (runId: string) =>
     ['screenings', 'status', runId] as const,
+}
+
+// ---------------------------------------------------------------------------
+// Search error（解釈失敗・LLM 失敗のコードを保持）
+// ---------------------------------------------------------------------------
+
+export class CompanySearchError extends Error {
+  code?: string
+  status: number
+
+  constructor(message: string, status: number, code?: string) {
+    super(message)
+    this.name = 'CompanySearchError'
+    this.status = status
+    this.code = code
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -56,6 +76,41 @@ export async function fetchCompanies(
   )
   if (!res.ok) throw new Error(`fetchCompanies failed: ${res.status}`)
   return res.json() as Promise<CompanyListResponse>
+}
+
+export async function searchCompanies(
+  params: CompanySearchParams,
+): Promise<CompanySearchResponse> {
+  const search = new URLSearchParams()
+  if (params.q) search.set('q', params.q)
+  if (params.companyName) search.set('company_name', params.companyName)
+  if (params.securitiesCode) search.set('securities_code', params.securitiesCode)
+  search.set('sort_by', params.sortBy ?? 'total_score')
+  search.set('page', String(params.page ?? 1))
+  search.set('page_size', String(params.pageSize ?? 20))
+
+  const res = await fetch(
+    `${baseURL}/api/v1/companies?${search.toString()}`,
+    withCredentials,
+  )
+
+  if (!res.ok) {
+    let code: string | undefined
+    let message = `searchCompanies failed: ${res.status}`
+    try {
+      const body = await res.json()
+      const detail = body?.detail
+      if (detail && typeof detail === 'object') {
+        code = detail.code
+        message = detail.message ?? message
+      }
+    } catch {
+      // body 解析失敗は無視
+    }
+    throw new CompanySearchError(message, res.status, code)
+  }
+
+  return res.json() as Promise<CompanySearchResponse>
 }
 
 export async function triggerScreening(): Promise<TriggerScreeningResponse> {
@@ -90,6 +145,22 @@ export function useCompanies(
   return useQuery<CompanyListResponse, Error>({
     queryKey: companyKeys.list(filters),
     queryFn: () => fetchCompanies(filters),
+    ...options,
+  })
+}
+
+export function useCompanySearch(
+  params: CompanySearchParams | null,
+  options?: Omit<
+    UseQueryOptions<CompanySearchResponse, CompanySearchError>,
+    'queryKey' | 'queryFn'
+  >,
+) {
+  return useQuery<CompanySearchResponse, CompanySearchError>({
+    queryKey: companyKeys.search(params ?? undefined),
+    queryFn: () => searchCompanies(params as CompanySearchParams),
+    enabled: params !== null,
+    retry: false,
     ...options,
   })
 }

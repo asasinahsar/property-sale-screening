@@ -374,9 +374,63 @@
           "companies"
         ],
         "summary": "Get Companies",
-        "description": "\u4f01\u696d\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7\u3092\u53d6\u5f97\u3059\u308b\uff08is_current=True \u306e\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u7d50\u679c\u304b\u3089\uff09.",
+        "description": "\u4f01\u696d\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7 / \u691c\u7d22\u3092\u53d6\u5f97\u3059\u308b\uff08is_current=True \u306e\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u7d50\u679c\u304b\u3089\uff09.\n\n- q / company_name / securities_code \u304c\u6307\u5b9a\u3055\u308c\u305f\u5834\u5408\u306f\u691c\u7d22\u30b5\u30fc\u30d3\u30b9\u306b\u59d4\u8b72\u3059\u308b\u3002\n- \u3044\u305a\u308c\u3082\u7121\u3044\u5834\u5408\u306f\u5f93\u6765\u306e\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7\u3092\u8fd4\u3059\u3002",
         "operationId": "get_companies_api_v1_companies_get",
         "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u81ea\u7136\u8a00\u8a9e\u691c\u7d22\u30af\u30a8\u30ea\uff08\u6700\u5927200\u5b57\uff09\u3002LLM \u3067\u6761\u4ef6\u62bd\u51fa",
+              "title": "Q"
+            },
+            "description": "\u81ea\u7136\u8a00\u8a9e\u691c\u7d22\u30af\u30a8\u30ea\uff08\u6700\u5927200\u5b57\uff09\u3002LLM \u3067\u6761\u4ef6\u62bd\u51fa"
+          },
+          {
+            "name": "company_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u4f01\u696d\u540d\uff08\u5b8c\u5168\u4e00\u81f4\uff09",
+              "title": "Company Name"
+            },
+            "description": "\u4f01\u696d\u540d\uff08\u5b8c\u5168\u4e00\u81f4\uff09"
+          },
+          {
+            "name": "securities_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u8a3c\u5238\u30b3\u30fc\u30c9\uff08\u5b8c\u5168\u4e00\u81f4\uff09",
+              "title": "Securities Code"
+            },
+            "description": "\u8a3c\u5238\u30b3\u30fc\u30c9\uff08\u5b8c\u5168\u4e00\u81f4\uff09"
+          },
           {
             "name": "industry",
             "in": "query",
@@ -511,7 +565,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CompanyListResponse"
+                  "$ref": "#/components/schemas/CompanySearchResponse"
                 }
               }
             }
@@ -1068,6 +1122,240 @@
         }
       }
     },
+    "/api/v1/kpi/effectiveness": {
+      "get": {
+        "tags": [
+          "kpi"
+        ],
+        "summary": "Get Effectiveness",
+        "description": "\u52b9\u679c\u691c\u8a3c KPI \u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8\u3092\u53d6\u5f97\u3059\u308b\uff08\u8aad\u307f\u53d6\u308a\u5c02\u7528\uff09.",
+        "operationId": "get_effectiveness_api_v1_kpi_effectiveness_get",
+        "parameters": [
+          {
+            "name": "period_from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u96c6\u8a08\u671f\u9593\uff08\u958b\u59cb\uff09",
+              "title": "Period From"
+            },
+            "description": "\u96c6\u8a08\u671f\u9593\uff08\u958b\u59cb\uff09"
+          },
+          {
+            "name": "period_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u96c6\u8a08\u671f\u9593\uff08\u7d42\u4e86\uff09",
+              "title": "Period To"
+            },
+            "description": "\u96c6\u8a08\u671f\u9593\uff08\u7d42\u4e86\uff09"
+          },
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectivenessResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/kpi/work-logs": {
+      "post": {
+        "tags": [
+          "kpi"
+        ],
+        "summary": "Create Work Log",
+        "description": "\u5de5\u6570\u30ed\u30b0\u3092\u8a18\u9332\u3059\u308b\uff08JWT \u8a8d\u8a3c\u5fc5\u9808\uff09.",
+        "operationId": "create_work_log_api_v1_kpi_work_logs_post",
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkLogCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkLogSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "kpi"
+        ],
+        "summary": "List Work Logs",
+        "description": "\u5de5\u6570\u30ed\u30b0\u4e00\u89a7\u3092\u53d6\u5f97\u3059\u308b.",
+        "operationId": "list_work_logs_api_v1_kpi_work_logs_get",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u958b\u59cb\u65e5",
+              "title": "From"
+            },
+            "description": "\u958b\u59cb\u65e5"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "\u7d42\u4e86\u65e5",
+              "title": "To"
+            },
+            "description": "\u7d42\u4e86\u65e5"
+          },
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkLogListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "tags": [
@@ -1257,45 +1545,6 @@
         "title": "CompanyDetailSchema",
         "description": "\u4f01\u696d\u8a73\u7d30\u30ec\u30b9\u30dd\u30f3\u30b9\uff08P002 \u4f01\u696d\u8a73\u7d30\u753b\u9762\u7528\uff09."
       },
-      "CompanyListResponse": {
-        "properties": {
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/CompanyRankingItemSchema"
-            },
-            "type": "array",
-            "title": "Items",
-            "description": "\u4f01\u696d\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7"
-          },
-          "total": {
-            "type": "integer",
-            "minimum": 0.0,
-            "title": "Total",
-            "description": "\u7dcf\u4ef6\u6570"
-          },
-          "page": {
-            "type": "integer",
-            "minimum": 1.0,
-            "title": "Page",
-            "description": "\u73fe\u5728\u30da\u30fc\u30b8\u756a\u53f7\uff081\u59cb\u307e\u308a\uff09"
-          },
-          "page_size": {
-            "type": "integer",
-            "maximum": 200.0,
-            "minimum": 1.0,
-            "title": "Page Size",
-            "description": "1\u30da\u30fc\u30b8\u3042\u305f\u308a\u306e\u4ef6\u6570"
-          }
-        },
-        "type": "object",
-        "required": [
-          "total",
-          "page",
-          "page_size"
-        ],
-        "title": "CompanyListResponse",
-        "description": "\u4f01\u696d\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7\u30ec\u30b9\u30dd\u30f3\u30b9\uff08\u30da\u30fc\u30b8\u30cd\u30fc\u30b7\u30e7\u30f3\u4ed8\u304d\uff09."
-      },
       "CompanyRankingItemSchema": {
         "properties": {
           "company_id": {
@@ -1413,6 +1662,68 @@
         "title": "CompanyRankingItemSchema",
         "description": "\u4f01\u696d\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7\u306e1\u30a8\u30f3\u30c8\u30ea."
       },
+      "CompanySearchResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CompanyRankingItemSchema"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "\u4e00\u81f4\u3057\u305f\u4f01\u696d\u4e00\u89a7"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total",
+            "description": "\u7dcf\u4ef6\u6570"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Page",
+            "description": "\u73fe\u5728\u30da\u30fc\u30b8\u756a\u53f7\uff081\u59cb\u307e\u308a\uff09"
+          },
+          "page_size": {
+            "type": "integer",
+            "maximum": 200.0,
+            "minimum": 1.0,
+            "title": "Page Size",
+            "description": "1\u30da\u30fc\u30b8\u3042\u305f\u308a\u306e\u4ef6\u6570"
+          },
+          "search_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Search Summary",
+            "description": "\u81ea\u7136\u8a00\u8a9e\u691c\u7d22\u6642\u306e\u89e3\u91c8\u8aac\u660e\uff08\u30d0\u30ca\u30fc\u8868\u793a\u7528\uff09"
+          },
+          "extracted_filters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SearchConditionSchema"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "\u81ea\u7136\u8a00\u8a9e\u691c\u7d22\u6642\u306b\u62bd\u51fa\u3055\u308c\u305f\u6761\u4ef6"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "page",
+          "page_size"
+        ],
+        "title": "CompanySearchResponse",
+        "description": "\u4f01\u696d\u691c\u7d22\u30ec\u30b9\u30dd\u30f3\u30b9\uff08\u30e9\u30f3\u30ad\u30f3\u30b0\u4e00\u89a7 + \u81ea\u7136\u8a00\u8a9e\u691c\u7d22\u306e\u8981\u7d04\u4ed8\u304d\uff09.\n\n\u5b8c\u5168\u4e00\u81f4\u30fb\u901a\u5e38\u30d5\u30a3\u30eb\u30bf\u306e\u5834\u5408 search_summary / extracted_filters \u306f None\u3002"
+      },
       "ConfidenceLevelEnum": {
         "type": "string",
         "enum": [
@@ -1485,6 +1796,32 @@
         ],
         "title": "DocumentSummarySchema",
         "description": "\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u306e\u6982\u8981\u60c5\u5831."
+      },
+      "EffectivenessResponse": {
+        "properties": {
+          "snapshots": {
+            "items": {
+              "$ref": "#/components/schemas/KpiSnapshotSchema"
+            },
+            "type": "array",
+            "title": "Snapshots",
+            "description": "\u671f\u9593\u5185\u306e KPI \u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8\u4e00\u89a7\uff08\u6607\u9806\uff09"
+          },
+          "latest": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/KpiSnapshotSchema"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "\u6700\u65b0\u306e KPI \u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8"
+          }
+        },
+        "type": "object",
+        "title": "EffectivenessResponse",
+        "description": "\u52b9\u679c\u691c\u8a3c KPI \u30ec\u30b9\u30dd\u30f3\u30b9\uff08\u6700\u65b0 + \u63a8\u79fb\uff09."
       },
       "FileStatusResponse": {
         "properties": {
@@ -1715,6 +2052,115 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "KpiSnapshotSchema": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id",
+            "description": "\u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8ID"
+          },
+          "period_from": {
+            "type": "string",
+            "format": "date",
+            "title": "Period From",
+            "description": "\u96c6\u8a08\u671f\u9593\uff08\u958b\u59cb\uff09"
+          },
+          "period_to": {
+            "type": "string",
+            "format": "date",
+            "title": "Period To",
+            "description": "\u96c6\u8a08\u671f\u9593\uff08\u7d42\u4e86\uff09"
+          },
+          "universe_coverage": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Universe Coverage",
+            "description": "\u30e6\u30cb\u30d0\u30fc\u30b9\u30ab\u30d0\u30ec\u30c3\u30b8\uff08%\uff09"
+          },
+          "traceability_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Traceability Rate",
+            "description": "\u30c8\u30ec\u30fc\u30b9\u53ef\u80fd\u7387\uff08%\uff09"
+          },
+          "avg_structure_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avg Structure Score",
+            "description": "\u5e73\u5747\u69cb\u9020\u30b9\u30b3\u30a2"
+          },
+          "reproducibility_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reproducibility Score",
+            "description": "\u518d\u73fe\u6027\u30b9\u30b3\u30a2"
+          },
+          "total_workload_min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Workload Min",
+            "description": "\u7dcf\u5de5\u6570\uff08\u5206\uff09"
+          },
+          "workload_reduction_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workload Reduction Rate",
+            "description": "\u5de5\u6570\u524a\u6e1b\u7387\uff08%\uff09"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "\u4f5c\u6210\u65e5\u6642"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "period_from",
+          "period_to",
+          "created_at"
+        ],
+        "title": "KpiSnapshotSchema",
+        "description": "\u52b9\u679c\u691c\u8a3c KPI \u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8\uff08\u8aad\u307f\u53d6\u308a\u5c02\u7528\uff09."
       },
       "LoginRequest": {
         "properties": {
@@ -2383,6 +2829,121 @@
         "title": "ScreeningTriggerResponse",
         "description": "\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u8d77\u52d5\u30ec\u30b9\u30dd\u30f3\u30b9."
       },
+      "SearchConditionSchema": {
+        "properties": {
+          "unrealized_gain_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unrealized Gain Min",
+            "description": "\u542b\u307f\u76ca\u4e0b\u9650\uff08\u5104\u5186\uff09"
+          },
+          "unrealized_gain_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unrealized Gain Max",
+            "description": "\u542b\u307f\u76ca\u4e0a\u9650\uff08\u5104\u5186\uff09"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region",
+            "description": "\u5730\u57df\uff08\u4f8b\uff1a\u95a2\u897f\uff09"
+          },
+          "industry": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Industry",
+            "description": "\u696d\u7a2e\uff08\u4f8b\uff1a\u5c0f\u58f2\uff09"
+          },
+          "pbr_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pbr Max",
+            "description": "PBR \u4e0a\u9650\uff08\u4f8b\uff1a1.0\uff09"
+          },
+          "pbr_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pbr Min",
+            "description": "PBR \u4e0b\u9650"
+          },
+          "structure_score_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Structure Score Min",
+            "description": "\u69cb\u9020\u30b9\u30b3\u30a2\u4e0b\u9650"
+          },
+          "company_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Name",
+            "description": "\u4f01\u696d\u540d\uff08\u5b8c\u5168\u4e00\u81f4\uff09"
+          },
+          "securities_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Securities Code",
+            "description": "\u8a3c\u5238\u30b3\u30fc\u30c9\uff08\u5b8c\u5168\u4e00\u81f4\uff09"
+          }
+        },
+        "type": "object",
+        "title": "SearchConditionSchema",
+        "description": "\u81ea\u7136\u8a00\u8a9e\u30af\u30a8\u30ea\u304b\u3089\u62bd\u51fa\u3055\u308c\u305f\u691c\u7d22\u6761\u4ef6\uff08\u30d5\u30a3\u30eb\u30bf\uff09.\n\n\u5168\u30d5\u30a3\u30fc\u30eb\u30c9 optional\u3002\u672a\u62bd\u51fa\u306e\u30d5\u30a3\u30fc\u30eb\u30c9\u306f None\u3002"
+      },
       "SignalTypeEnum": {
         "type": "string",
         "enum": [
@@ -2402,6 +2963,17 @@
         ],
         "title": "StanceEnum",
         "description": "\u5b9a\u6027\u30b7\u30b0\u30ca\u30eb\u306e\u30b9\u30bf\u30f3\u30b9."
+      },
+      "TaskTypeEnum": {
+        "type": "string",
+        "enum": [
+          "primary_screening",
+          "deep_dive",
+          "report",
+          "other"
+        ],
+        "title": "TaskTypeEnum",
+        "description": "\u5de5\u6570\u30ed\u30b0\u306e\u30bf\u30b9\u30af\u7a2e\u5225."
       },
       "UserResponse": {
         "properties": {
@@ -2476,6 +3048,162 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "WorkLogCreateRequest": {
+        "properties": {
+          "task_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TaskTypeEnum"
+              }
+            ],
+            "description": "\u30bf\u30b9\u30af\u7a2e\u5225"
+          },
+          "duration_min": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Duration Min",
+            "description": "\u6240\u8981\u6642\u9593\uff08\u5206\uff09"
+          },
+          "screening_run_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Screening Run Id",
+            "description": "\u95a2\u9023\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u5b9f\u884cID\uff08\u4efb\u610f\uff09"
+          },
+          "period_label": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Period Label",
+            "description": "\u671f\u9593\u30e9\u30d9\u30eb\uff08\u4efb\u610f\uff09"
+          },
+          "logged_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Logged On",
+            "description": "\u8a18\u9332\u5bfe\u8c61\u65e5"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_type",
+          "duration_min",
+          "logged_on"
+        ],
+        "title": "WorkLogCreateRequest",
+        "description": "\u5de5\u6570\u30ed\u30b0\u8a18\u9332\u30ea\u30af\u30a8\u30b9\u30c8."
+      },
+      "WorkLogListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/WorkLogSchema"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "\u5de5\u6570\u30ed\u30b0\u4e00\u89a7"
+          },
+          "total_min": {
+            "type": "integer",
+            "title": "Total Min",
+            "description": "\u5408\u8a08\u5de5\u6570\uff08\u5206\uff09",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "WorkLogListResponse",
+        "description": "\u5de5\u6570\u30ed\u30b0\u4e00\u89a7\u30ec\u30b9\u30dd\u30f3\u30b9."
+      },
+      "WorkLogSchema": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id",
+            "description": "\u5de5\u6570\u30ed\u30b0ID"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id",
+            "description": "\u8a18\u9332\u8005\u30e6\u30fc\u30b6\u30fcID"
+          },
+          "task_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TaskTypeEnum"
+              }
+            ],
+            "description": "\u30bf\u30b9\u30af\u7a2e\u5225"
+          },
+          "duration_min": {
+            "type": "integer",
+            "title": "Duration Min",
+            "description": "\u6240\u8981\u6642\u9593\uff08\u5206\uff09"
+          },
+          "screening_run_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Screening Run Id",
+            "description": "\u95a2\u9023\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u5b9f\u884cID"
+          },
+          "period_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Period Label",
+            "description": "\u671f\u9593\u30e9\u30d9\u30eb"
+          },
+          "logged_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Logged On",
+            "description": "\u8a18\u9332\u5bfe\u8c61\u65e5"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "\u4f5c\u6210\u65e5\u6642"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "task_type",
+          "duration_min",
+          "logged_on",
+          "created_at"
+        ],
+        "title": "WorkLogSchema",
+        "description": "\u5de5\u6570\u30ed\u30b0."
       }
     }
   }

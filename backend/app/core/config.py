@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     # LLM (Anthropic)
     ANTHROPIC_API_KEY: str = ""
     ANTHROPIC_MODEL: str = "claude-sonnet-4-6"
+    # LLM 動作モード: "test" の場合は外部 API を呼ばずモックを返す
+    LLM_MODE: str = "production"
 
     class Config:
         env_file = ".env"
