@@ -529,6 +529,196 @@
         }
       }
     },
+    "/api/v1/companies/{company_id}": {
+      "get": {
+        "tags": [
+          "companies"
+        ],
+        "summary": "Get Company Detail",
+        "description": "\u4f01\u696d\u8a73\u7d30\u3092\u53d6\u5f97\u3059\u308b.",
+        "operationId": "get_company_detail_api_v1_companies__company_id__get",
+        "parameters": [
+          {
+            "name": "company_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Company Id"
+            }
+          },
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyDetailSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/companies/{company_id}/report": {
+      "post": {
+        "tags": [
+          "companies"
+        ],
+        "summary": "Generate Report",
+        "description": "PDF \u30ec\u30dd\u30fc\u30c8\u3092\u975e\u540c\u671f\u751f\u6210\u3059\u308b\uff08202 Accepted\uff09.",
+        "operationId": "generate_report_api_v1_companies__company_id__report_post",
+        "parameters": [
+          {
+            "name": "company_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Company Id"
+            }
+          },
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportGenerateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportGenerateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/{file_id}": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Get File Status",
+        "description": "\u30d5\u30a1\u30a4\u30eb\u751f\u6210\u30b9\u30c6\u30fc\u30bf\u30b9\u3092\u53d6\u5f97\u3059\u308b.",
+        "operationId": "get_file_status_api_v1_files__file_id__get",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "File Id"
+            }
+          },
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "tags": [
@@ -627,6 +817,97 @@
   },
   "components": {
     "schemas": {
+      "CompanyDetailSchema": {
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Company Id",
+            "description": "\u4f01\u696dID"
+          },
+          "securities_code": {
+            "type": "string",
+            "maxLength": 10,
+            "minLength": 1,
+            "title": "Securities Code",
+            "description": "\u8a3c\u5238\u30b3\u30fc\u30c9"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name",
+            "description": "\u4f01\u696d\u540d"
+          },
+          "industry": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Industry",
+            "description": "\u696d\u7a2e"
+          },
+          "market_cap": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Market Cap",
+            "description": "\u6642\u4fa1\u7dcf\u984d\uff08\u5104\u5186\uff09"
+          },
+          "scoring": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ScoreBreakdownDetailSchema"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "\u6700\u65b0\u30b9\u30b3\u30a2\u5185\u8a33\u3002\u30b9\u30b3\u30a2\u672a\u5b9f\u884c\u306e\u5834\u5408\u306f None"
+          },
+          "financial": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FinancialDataDetailSchema"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "\u6700\u65b0\u8ca1\u52d9\u30c7\u30fc\u30bf\u3002\u30c7\u30fc\u30bf\u306a\u3057\u306e\u5834\u5408\u306f None"
+          },
+          "signals_support": {
+            "items": {
+              "$ref": "#/components/schemas/QualitativeSignalDetailSchema"
+            },
+            "type": "array",
+            "title": "Signals Support",
+            "description": "\u652f\u6301\u30b7\u30b0\u30ca\u30eb\u4e00\u89a7\uff08stance=support\uff09"
+          },
+          "signals_counter": {
+            "items": {
+              "$ref": "#/components/schemas/QualitativeSignalDetailSchema"
+            },
+            "type": "array",
+            "title": "Signals Counter",
+            "description": "\u53cd\u5bfe\u30b7\u30b0\u30ca\u30eb\u4e00\u89a7\uff08stance=counter\uff09"
+          }
+        },
+        "type": "object",
+        "required": [
+          "company_id",
+          "securities_code",
+          "name",
+          "industry"
+        ],
+        "title": "CompanyDetailSchema",
+        "description": "\u4f01\u696d\u8a73\u7d30\u30ec\u30b9\u30dd\u30f3\u30b9\uff08P002 \u4f01\u696d\u8a73\u7d30\u753b\u9762\u7528\uff09."
+      },
       "CompanyListResponse": {
         "properties": {
           "items": {
@@ -821,6 +1102,258 @@
         ],
         "title": "DashboardKpiResponse"
       },
+      "DocumentSummarySchema": {
+        "properties": {
+          "document_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Document Id",
+            "description": "\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8ID"
+          },
+          "document_type": {
+            "type": "string",
+            "title": "Document Type",
+            "description": "\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u7a2e\u5225\uff08yuho/mid_term_plan/timely_disclosure/large_shareholding\uff09"
+          },
+          "disclosed_at": {
+            "type": "string",
+            "format": "date",
+            "title": "Disclosed At",
+            "description": "\u958b\u793a\u65e5"
+          },
+          "source_url": {
+            "type": "string",
+            "title": "Source Url",
+            "description": "\u30bd\u30fc\u30b9URL"
+          }
+        },
+        "type": "object",
+        "required": [
+          "document_id",
+          "document_type",
+          "disclosed_at",
+          "source_url"
+        ],
+        "title": "DocumentSummarySchema",
+        "description": "\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u306e\u6982\u8981\u60c5\u5831."
+      },
+      "FileStatusResponse": {
+        "properties": {
+          "file_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "File Id",
+            "description": "\u751f\u6210\u30d5\u30a1\u30a4\u30ebID"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed"
+            ],
+            "title": "Status",
+            "description": "\u751f\u6210\u30b9\u30c6\u30fc\u30bf\u30b9"
+          },
+          "download_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Download Url",
+            "description": "\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9URL\uff08completed \u6642\u306e\u307f\u8a2d\u5b9a\uff09"
+          },
+          "format": {
+            "type": "string",
+            "title": "Format",
+            "description": "\u30d5\u30a1\u30a4\u30eb\u30d5\u30a9\u30fc\u30de\u30c3\u30c8\uff08\u4f8b: pdf\uff09"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "\u751f\u6210\u30ea\u30af\u30a8\u30b9\u30c8\u65e5\u6642"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_id",
+          "status",
+          "format",
+          "created_at"
+        ],
+        "title": "FileStatusResponse",
+        "description": "\u30d5\u30a1\u30a4\u30eb\u751f\u6210\u30b9\u30c6\u30fc\u30bf\u30b9\u53d6\u5f97\u30ec\u30b9\u30dd\u30f3\u30b9."
+      },
+      "FinancialDataDetailSchema": {
+        "properties": {
+          "as_of_date": {
+            "type": "string",
+            "format": "date",
+            "title": "As Of Date",
+            "description": "\u8ca1\u52d9\u30c7\u30fc\u30bf\u57fa\u6e96\u65e5"
+          },
+          "revenue": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revenue",
+            "description": "\u58f2\u4e0a\u9ad8\uff08\u5104\u5186\uff09"
+          },
+          "pbr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pbr",
+            "description": "PBR\uff08\u682a\u4fa1\u7d14\u8cc7\u7523\u500d\u7387\uff09"
+          },
+          "adjusted_pbr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adjusted Pbr",
+            "description": "\u4fee\u6b63PBR"
+          },
+          "equity_ratio": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equity Ratio",
+            "description": "\u81ea\u5df1\u8cc7\u672c\u6bd4\u7387\uff080.0\u20131.0\uff09"
+          },
+          "re_market_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Re Market Value",
+            "description": "\u4e0d\u52d5\u7523\u6642\u4fa1\uff08\u5104\u5186\uff09"
+          },
+          "re_book_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Re Book Value",
+            "description": "\u4e0d\u52d5\u7523\u7c3f\u4fa1\uff08\u5104\u5186\uff09"
+          },
+          "unrealized_gain": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unrealized Gain",
+            "description": "\u542b\u307f\u76ca\uff08\u5104\u5186\uff09"
+          },
+          "unrealized_gain_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unrealized Gain Ratio",
+            "description": "\u542b\u307f\u76ca\u500d\u7387\uff08\u542b\u307f\u76ca/\u6642\u4fa1\u7dcf\u984d\uff09"
+          },
+          "roic": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Roic",
+            "description": "ROIC"
+          },
+          "wacc": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wacc",
+            "description": "WACC"
+          },
+          "stock_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stock Price",
+            "description": "\u682a\u4fa1\uff08\u5186\uff09"
+          },
+          "roic_wacc_gap": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Roic Wacc Gap",
+            "description": "ROIC - WACC \u306e\u30ae\u30e3\u30c3\u30d7\u3002\u3069\u3061\u3089\u304b\u304c None \u306e\u5834\u5408\u306f None \u3092\u8fd4\u3059.",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "as_of_date",
+          "roic_wacc_gap"
+        ],
+        "title": "FinancialDataDetailSchema",
+        "description": "\u8ca1\u52d9\u30c7\u30fc\u30bf\u306e\u8a73\u7d30\u60c5\u5831\uff08\u4f01\u696d\u8a73\u7d30\u753b\u9762\u8868\u793a\u7528\uff09."
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -877,6 +1410,136 @@
         ],
         "title": "MeResponse"
       },
+      "QualitativeSignalDetailSchema": {
+        "properties": {
+          "signal_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Signal Id",
+            "description": "\u30b7\u30b0\u30ca\u30ebID"
+          },
+          "signal_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignalTypeEnum"
+              }
+            ],
+            "description": "\u30b7\u30b0\u30ca\u30eb\u7a2e\u5225"
+          },
+          "stance": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StanceEnum"
+              }
+            ],
+            "description": "\u30b9\u30bf\u30f3\u30b9\uff08support/counter\uff09"
+          },
+          "strength": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strength",
+            "description": "\u30b7\u30b0\u30ca\u30eb\u5f37\u5ea6\uff080.0\u20131.0\uff09"
+          },
+          "quote_text": {
+            "type": "string",
+            "title": "Quote Text",
+            "description": "\u6839\u62e0\u3068\u306a\u308b\u5f15\u7528\u30c6\u30ad\u30b9\u30c8"
+          },
+          "source_page": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Source Page",
+            "description": "\u5f15\u7528\u5143\u30da\u30fc\u30b8\u756a\u53f7"
+          },
+          "document": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DocumentSummarySchema"
+              }
+            ],
+            "description": "\u5f15\u7528\u5143\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u60c5\u5831"
+          }
+        },
+        "type": "object",
+        "required": [
+          "signal_id",
+          "signal_type",
+          "stance",
+          "quote_text",
+          "source_page",
+          "document"
+        ],
+        "title": "QualitativeSignalDetailSchema",
+        "description": "\u5b9a\u6027\u30b7\u30b0\u30ca\u30eb\u306e\u8a73\u7d30\u60c5\u5831\uff08\u6839\u62e0\u30ec\u30dd\u30fc\u30c8\u8868\u793a\u7528\uff09."
+      },
+      "ReportGenerateRequest": {
+        "properties": {
+          "format": {
+            "const": "pdf",
+            "title": "Format",
+            "description": "\u51fa\u529b\u30d5\u30a9\u30fc\u30de\u30c3\u30c8\uff08\u73fe\u72b6 pdf \u306e\u307f\u5bfe\u5fdc\uff09",
+            "default": "pdf"
+          }
+        },
+        "type": "object",
+        "title": "ReportGenerateRequest",
+        "description": "\u6839\u62e0\u30ec\u30dd\u30fc\u30c8\u751f\u6210\u30ea\u30af\u30a8\u30b9\u30c8."
+      },
+      "ReportGenerateResponse": {
+        "properties": {
+          "file_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "File Id",
+            "description": "\u751f\u6210\u30d5\u30a1\u30a4\u30ebID"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed"
+            ],
+            "title": "Status",
+            "description": "\u751f\u6210\u30b9\u30c6\u30fc\u30bf\u30b9"
+          },
+          "download_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Download Url",
+            "description": "\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9URL\uff08completed \u6642\u306e\u307f\u8a2d\u5b9a\uff09"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "\u751f\u6210\u30ea\u30af\u30a8\u30b9\u30c8\u65e5\u6642"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_id",
+          "status",
+          "created_at"
+        ],
+        "title": "ReportGenerateResponse",
+        "description": "\u6839\u62e0\u30ec\u30dd\u30fc\u30c8\u751f\u6210\u958b\u59cb\u30ec\u30b9\u30dd\u30f3\u30b9."
+      },
       "RunStatusEnum": {
         "type": "string",
         "enum": [
@@ -886,6 +1549,97 @@
         ],
         "title": "RunStatusEnum",
         "description": "\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u5b9f\u884c\u30b9\u30c6\u30fc\u30bf\u30b9."
+      },
+      "ScoreBreakdownDetailSchema": {
+        "properties": {
+          "structure_score": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Structure Score",
+            "description": "\u69cb\u9020\u30b9\u30b3\u30a2\uff080\u2013100\uff09"
+          },
+          "event_score": {
+            "type": "number",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Event Score",
+            "description": "\u30a4\u30d9\u30f3\u30c8\u30b9\u30b3\u30a2\uff080\u2013100\uff09"
+          },
+          "total_score": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Total Score",
+            "description": "\u7d71\u5408\u7dcf\u5408\u30b9\u30b3\u30a2"
+          },
+          "event_boost": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 2.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Boost",
+            "description": "\u30a4\u30d9\u30f3\u30c8\u30d6\u30fc\u30b9\u30c8\u4fc2\u6570\uff081.0\u20132.0\uff09"
+          },
+          "confidence": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ConfidenceLevelEnum"
+              }
+            ],
+            "description": "\u4fe1\u983c\u5ea6\u30ec\u30d9\u30eb"
+          },
+          "ai_judgment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ai Judgment",
+            "description": "AI\u306b\u3088\u308b\u5224\u5b9a\u30b3\u30e1\u30f3\u30c8"
+          },
+          "judgment_refs": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Judgment Refs",
+            "description": "\u5224\u5b9a\u6839\u62e0\u306e\u53c2\u7167\u60c5\u5831 e.g. {\"signal_ids\": [...], \"metric_ids\": [...]}"
+          },
+          "score_breakdown": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score Breakdown",
+            "description": "\u30b9\u30b3\u30a2\u5185\u8a33 e.g. {\"structure\": ..., \"event\": ..., \"boost\": ...}"
+          }
+        },
+        "type": "object",
+        "required": [
+          "structure_score",
+          "event_score",
+          "total_score",
+          "confidence"
+        ],
+        "title": "ScoreBreakdownDetailSchema",
+        "description": "\u30b9\u30b3\u30a2\u5185\u8a33\u306e\u8a73\u7d30\u60c5\u5831."
       },
       "ScreeningRunResponse": {
         "properties": {
@@ -971,6 +1725,26 @@
         ],
         "title": "ScreeningTriggerResponse",
         "description": "\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u8d77\u52d5\u30ec\u30b9\u30dd\u30f3\u30b9."
+      },
+      "SignalTypeEnum": {
+        "type": "string",
+        "enum": [
+          "activist_proposal",
+          "capital_efficiency_target",
+          "sale_suggestion",
+          "other"
+        ],
+        "title": "SignalTypeEnum",
+        "description": "\u5b9a\u6027\u30b7\u30b0\u30ca\u30eb\u306e\u7a2e\u5225."
+      },
+      "StanceEnum": {
+        "type": "string",
+        "enum": [
+          "support",
+          "counter"
+        ],
+        "title": "StanceEnum",
+        "description": "\u5b9a\u6027\u30b7\u30b0\u30ca\u30eb\u306e\u30b9\u30bf\u30f3\u30b9."
       },
       "UserResponse": {
         "properties": {

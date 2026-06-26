@@ -1,10 +1,21 @@
 """企業ランキングエンドポイント."""
 
-from fastapi import APIRouter, Depends, Query
+import uuid
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.dependencies.auth import get_current_user
+from app.api.v1.schemas.company_detail import (
+    CompanyDetailSchema,
+    DocumentSummarySchema,
+    FinancialDataDetailSchema,
+    QualitativeSignalDetailSchema,
+    ReportGenerateRequest,
+    ReportGenerateResponse,
+    ScoreBreakdownDetailSchema,
+)
 from app.api.v1.schemas.scoring import (
     CompanyListResponse,
     CompanyRankingItemSchema,
@@ -14,6 +25,8 @@ from app.core.dependencies import get_db
 from app.models.company import Company, QualitativeSignal
 from app.models.screening import ScreeningRun, ScoringResult
 from app.models.user import User
+from app.repositories.company_detail_repository import CompanyDetailRepository
+from app.services.report_service import ReportService
 
 router = APIRouter(prefix="/api/v1/companies", tags=["companies"])
 
@@ -133,4 +146,109 @@ async def get_companies(
         total=total,
         page=page,
         page_size=page_size,
+    )
+
+
+@router.get("/{company_id}", response_model=CompanyDetailSchema, status_code=200)
+async def get_company_detail(
+    company_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> CompanyDetailSchema:
+    """企業詳細を取得する."""
+    detail = await CompanyDetailRepository(db).get_company_detail(company_id)
+    if detail is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+
+    signals_support = [
+        QualitativeSignalDetailSchema(
+            signal_id=s.id,
+            signal_type=s.signal_type,
+            stance=s.stance,
+            strength=float(s.strength) if s.strength is not None else None,
+            quote_text=s.quote_text,
+            source_page=s.source_page,
+            document=DocumentSummarySchema(
+                document_id=s.document.id,
+                document_type=s.document.document_type,
+                disclosed_at=s.document.disclosed_at,
+                source_url=s.document.source_url,
+            ),
+        )
+        for s in detail.signals_support
+    ]
+
+    signals_counter = [
+        QualitativeSignalDetailSchema(
+            signal_id=s.id,
+            signal_type=s.signal_type,
+            stance=s.stance,
+            strength=float(s.strength) if s.strength is not None else None,
+            quote_text=s.quote_text,
+            source_page=s.source_page,
+            document=DocumentSummarySchema(
+                document_id=s.document.id,
+                document_type=s.document.document_type,
+                disclosed_at=s.document.disclosed_at,
+                source_url=s.document.source_url,
+            ),
+        )
+        for s in detail.signals_counter
+    ]
+
+    return CompanyDetailSchema(
+        company_id=detail.company.id,
+        securities_code=detail.company.securities_code,
+        name=detail.company.name,
+        industry=detail.company.industry,
+        market_cap=float(detail.company.market_cap)
+        if detail.company.market_cap is not None
+        else None,
+        scoring=ScoreBreakdownDetailSchema.model_validate(detail.scoring)
+        if detail.scoring
+        else None,
+        financial=FinancialDataDetailSchema.model_construct(
+            **{
+                k: (float(v) if v is not None else None)
+                for k, v in {
+                    "as_of_date": detail.financial.as_of_date,
+                    "revenue": detail.financial.revenue,
+                    "pbr": detail.financial.pbr,
+                    "adjusted_pbr": detail.financial.adjusted_pbr,
+                    "equity_ratio": detail.financial.equity_ratio,
+                    "re_market_value": detail.financial.re_market_value,
+                    "re_book_value": detail.financial.re_book_value,
+                    "unrealized_gain": detail.financial.unrealized_gain,
+                    "unrealized_gain_ratio": detail.financial.unrealized_gain_ratio,
+                    "roic": detail.financial.roic,
+                    "wacc": detail.financial.wacc,
+                    "stock_price": detail.financial.stock_price,
+                }.items()
+                if k not in ("as_of_date",)
+            },
+            as_of_date=detail.financial.as_of_date,
+        )
+        if detail.financial
+        else None,
+        signals_support=signals_support,
+        signals_counter=signals_counter,
+    )
+
+
+@router.post(
+    "/{company_id}/report", response_model=ReportGenerateResponse, status_code=202
+)
+async def generate_report(
+    company_id: uuid.UUID,
+    request: ReportGenerateRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ReportGenerateResponse:
+    """PDF レポートを非同期生成する（202 Accepted）."""
+    detail = await CompanyDetailRepository(db).get_company_detail(company_id)
+    if detail is None:
+        raise HTTPException(status_code=404, detail="Company not found")
+
+    return await ReportService(db).generate_report(
+        company_id, current_user.id, request.format
     )

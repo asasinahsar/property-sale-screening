@@ -24,7 +24,10 @@ from app.core.dependencies import get_db
 from app.models.company import QualitativeSignal
 from app.models.screening import ScreeningRun, ScoringResult
 from app.models.user import User
-from app.repositories.company_repository import CompanyRepository, FinancialDataRepository
+from app.repositories.company_repository import (
+    CompanyRepository,
+    FinancialDataRepository,
+)
 from app.repositories.screening_repository import (
     ScreeningRunRepository,
     ScoringResultRepository,
@@ -54,8 +57,12 @@ def _build_financial_input(company, fd) -> FinancialDataInputSchema:
         pbr=float(fd.pbr) if fd.pbr is not None else None,
         adjusted_pbr=float(fd.adjusted_pbr) if fd.adjusted_pbr is not None else None,
         equity_ratio=raw_equity,
-        unrealized_gain=float(fd.unrealized_gain) if fd.unrealized_gain is not None else None,
-        unrealized_gain_ratio=float(fd.unrealized_gain_ratio) if fd.unrealized_gain_ratio is not None else None,
+        unrealized_gain=float(fd.unrealized_gain)
+        if fd.unrealized_gain is not None
+        else None,
+        unrealized_gain_ratio=float(fd.unrealized_gain_ratio)
+        if fd.unrealized_gain_ratio is not None
+        else None,
         roic=float(fd.roic) if fd.roic is not None else None,
         wacc=float(fd.wacc) if fd.wacc is not None else None,
         industry=company.industry,
@@ -87,8 +94,7 @@ async def _run_scoring_pipeline(run_id: uuid.UUID) -> None:
 
             # 3. 全企業の財務入力を構築（業種内z-score用）
             all_fi_inputs = [
-                _build_financial_input(c, fd_by_company.get(c.id))
-                for c in companies
+                _build_financial_input(c, fd_by_company.get(c.id)) for c in companies
             ]
             # 業種別にグループ化
             peers_by_industry: dict[str, list[FinancialDataInputSchema]] = {}
@@ -96,7 +102,7 @@ async def _run_scoring_pipeline(run_id: uuid.UUID) -> None:
                 peers_by_industry.setdefault(fi.industry, []).append(fi)
 
             # 4. 各企業の定性シグナルを取得
-            from sqlalchemy import and_
+
             signal_stmt = select(QualitativeSignal).where(
                 QualitativeSignal.company_id.in_([c.id for c in companies])
             )
@@ -115,7 +121,9 @@ async def _run_scoring_pipeline(run_id: uuid.UUID) -> None:
                 peers = peers_by_industry.get(company.industry, [])
 
                 # 構造スコア
-                structure_out = structure_svc.calculate(fi_input, peers=peers if len(peers) > 1 else None)
+                structure_out = structure_svc.calculate(
+                    fi_input, peers=peers if len(peers) > 1 else None
+                )
 
                 # イベントスコア（定性シグナルから）
                 company_signals = signals_by_company.get(company.id, [])
@@ -125,12 +133,16 @@ async def _run_scoring_pipeline(run_id: uuid.UUID) -> None:
                     if sig.recency is not None:
                         recency_days = (today - sig.recency).days
                     try:
-                        signal_inputs.append(QualitativeSignalInputSchema(
-                            signal_type=SignalTypeEnum(sig.signal_type),
-                            stance=StanceEnum(sig.stance),
-                            strength=float(sig.strength) if sig.strength is not None else 0.5,
-                            recency_days=recency_days,
-                        ))
+                        signal_inputs.append(
+                            QualitativeSignalInputSchema(
+                                signal_type=SignalTypeEnum(sig.signal_type),
+                                stance=StanceEnum(sig.stance),
+                                strength=float(sig.strength)
+                                if sig.strength is not None
+                                else 0.5,
+                                recency_days=recency_days,
+                            )
+                        )
                     except ValueError:
                         continue
 
@@ -149,18 +161,20 @@ async def _run_scoring_pipeline(run_id: uuid.UUID) -> None:
                 )
                 integrated_out = integration_svc.integrate(integrated_input)
 
-                scoring_results.append(ScoringResult(
-                    screening_run_id=run_id,
-                    company_id=company.id,
-                    structure_score=structure_out.structure_score,
-                    event_score=event_out.event_score,
-                    total_score=integrated_out.total_score,
-                    event_boost=event_out.event_boost,
-                    confidence=integrated_out.confidence.value,
-                    ai_judgment=integrated_out.ai_judgment,
-                    judgment_refs=integrated_out.judgment_refs,
-                    score_breakdown=integrated_out.score_breakdown,
-                ))
+                scoring_results.append(
+                    ScoringResult(
+                        screening_run_id=run_id,
+                        company_id=company.id,
+                        structure_score=structure_out.structure_score,
+                        event_score=event_out.event_score,
+                        total_score=integrated_out.total_score,
+                        event_boost=event_out.event_boost,
+                        confidence=integrated_out.confidence.value,
+                        ai_judgment=integrated_out.ai_judgment,
+                        judgment_refs=integrated_out.judgment_refs,
+                        score_breakdown=integrated_out.score_breakdown,
+                    )
+                )
 
             # 6. 一括保存 → run を current に
             await result_repo.bulk_create(scoring_results)

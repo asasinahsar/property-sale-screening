@@ -10,6 +10,7 @@ from app.core.database import Base
 LonglistStatus = Enum("candidate", "approved", "rejected", name="longlist_status")
 FileKind = Enum("export", "report", name="file_kind")
 FileFormat = Enum("csv", "excel", "pdf", "pptx", name="file_format")
+FileStatus = Enum("pending", "processing", "completed", "failed", name="file_status")
 
 
 class LonglistItem(Base):
@@ -63,5 +64,6 @@ class GeneratedFile(Base):
     )
     file_kind: Mapped[str] = mapped_column(FileKind, nullable=False)
     format: Mapped[str] = mapped_column(FileFormat, nullable=False)
-    s3_key: Mapped[str] = mapped_column(String(1024), nullable=False)
+    status: Mapped[str] = mapped_column(FileStatus, nullable=False, default="pending")
+    s3_key: Mapped[str] = mapped_column(String(1024), nullable=False, default="")
     created_at: Mapped[datetime] = mapped_column(nullable=False)

@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import {
   Box,
   Chip,
@@ -64,6 +65,8 @@ export function CompanyRankingTable({
   items,
   isLoading,
 }: CompanyRankingTableProps) {
+  const router = useRouter()
+
   if (isLoading) {
     return (
       <TableContainer component={Paper} variant="outlined">
@@ -114,7 +117,12 @@ export function CompanyRankingTable({
         </TableHead>
         <TableBody>
           {items.map((item, index) => (
-            <TableRow key={item.company_id} hover>
+            <TableRow
+              key={item.company_id}
+              hover
+              onClick={() => router.push(`/companies/${item.company_id}`)}
+              sx={{ cursor: 'pointer' }}
+            >
               <TableCell>{index + 1}</TableCell>
               <TableCell>
                 {item.name}
