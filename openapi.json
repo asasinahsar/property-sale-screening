@@ -719,6 +719,355 @@
         }
       }
     },
+    "/api/v1/longlist": {
+      "get": {
+        "tags": [
+          "longlist"
+        ],
+        "summary": "Get Longlist",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u4e00\u89a7\u3092\u53d6\u5f97\u3059\u308b.",
+        "operationId": "get_longlist_api_v1_longlist_get",
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LonglistListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "longlist"
+        ],
+        "summary": "Add Longlist",
+        "description": "\u4f01\u696d\u3092\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u306b\u8ffd\u52a0\u3059\u308b\uff08\u91cd\u8907\u6642 409\uff09.",
+        "operationId": "add_longlist_api_v1_longlist_post",
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LonglistCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LonglistItemSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/longlist/{item_id}": {
+      "patch": {
+        "tags": [
+          "longlist"
+        ],
+        "summary": "Update Longlist",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u306e\u30e1\u30e2\u30fb\u30b9\u30c6\u30fc\u30bf\u30b9\u3092\u66f4\u65b0\u3059\u308b.",
+        "operationId": "update_longlist_api_v1_longlist__item_id__patch",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          },
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LonglistUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LonglistItemSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "longlist"
+        ],
+        "summary": "Delete Longlist",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u304b\u3089\u4f01\u696d\u3092\u524a\u9664\u3059\u308b.",
+        "operationId": "delete_longlist_api_v1_longlist__item_id__delete",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          },
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/longlist/{item_id}/approval": {
+      "post": {
+        "tags": [
+          "longlist"
+        ],
+        "summary": "Approve Longlist",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u9805\u76ee\u3092\u627f\u8a8d/\u5374\u4e0b\u3059\u308b\uff08manager \u30ed\u30fc\u30eb\u306e\u307f\uff09.",
+        "operationId": "approve_longlist_api_v1_longlist__item_id__approval_post",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          },
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LonglistApprovalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LonglistItemSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/longlist/export": {
+      "post": {
+        "tags": [
+          "longlist"
+        ],
+        "summary": "Export Longlist",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u3092 CSV \u306b\u30a8\u30af\u30b9\u30dd\u30fc\u30c8\u3059\u308b\uff08202 Accepted\u30010 \u4ef6\u6642 409\uff09.",
+        "operationId": "export_longlist_api_v1_longlist_export_post",
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LonglistExportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "tags": [
@@ -1385,6 +1734,314 @@
           "password"
         ],
         "title": "LoginRequest"
+      },
+      "LonglistApprovalRequest": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "approve",
+              "reject"
+            ],
+            "title": "Action",
+            "description": "\u627f\u8a8d(approve) \u307e\u305f\u306f \u5374\u4e0b(reject)"
+          },
+          "reason_memo": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason Memo",
+            "description": "\u627f\u8a8d/\u5374\u4e0b\u7406\u7531\u30e1\u30e2\uff08\u6700\u5927500\u6587\u5b57\uff09"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "title": "LonglistApprovalRequest",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u627f\u8a8d/\u5374\u4e0b\u30ea\u30af\u30a8\u30b9\u30c8\uff08manager \u306e\u307f\uff09."
+      },
+      "LonglistCreateRequest": {
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Company Id",
+            "description": "\u8ffd\u52a0\u3059\u308b\u4f01\u696dID"
+          }
+        },
+        "type": "object",
+        "required": [
+          "company_id"
+        ],
+        "title": "LonglistCreateRequest",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u8ffd\u52a0\u30ea\u30af\u30a8\u30b9\u30c8."
+      },
+      "LonglistExportResponse": {
+        "properties": {
+          "file_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "File Id",
+            "description": "\u751f\u6210\u30d5\u30a1\u30a4\u30ebID"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed"
+            ],
+            "title": "Status",
+            "description": "\u751f\u6210\u30b9\u30c6\u30fc\u30bf\u30b9"
+          },
+          "download_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Download Url",
+            "description": "\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9URL\uff08completed \u6642\u306e\u307f\u8a2d\u5b9a\uff09"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "\u751f\u6210\u30ea\u30af\u30a8\u30b9\u30c8\u65e5\u6642"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_id",
+          "status",
+          "created_at"
+        ],
+        "title": "LonglistExportResponse",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8 CSV \u30a8\u30af\u30b9\u30dd\u30fc\u30c8\u958b\u59cb\u30ec\u30b9\u30dd\u30f3\u30b9\uff08202 Accepted\uff09."
+      },
+      "LonglistItemSchema": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id",
+            "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u9805\u76eeID"
+          },
+          "company_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Company Id",
+            "description": "\u4f01\u696dID"
+          },
+          "securities_code": {
+            "type": "string",
+            "title": "Securities Code",
+            "description": "\u8a3c\u5238\u30b3\u30fc\u30c9"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "\u4f01\u696d\u540d"
+          },
+          "industry": {
+            "type": "string",
+            "title": "Industry",
+            "description": "\u696d\u7a2e"
+          },
+          "total_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Score",
+            "description": "\u7dcf\u5408\u30b9\u30b3\u30a2"
+          },
+          "structure_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Structure Score",
+            "description": "\u69cb\u9020\u30b9\u30b3\u30a2"
+          },
+          "event_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Score",
+            "description": "\u30a4\u30d9\u30f3\u30c8\u30b9\u30b3\u30a2"
+          },
+          "unrealized_gain": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unrealized Gain",
+            "description": "\u542b\u307f\u76ca\uff08\u5104\u5186\uff09"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "candidate",
+              "approved",
+              "rejected"
+            ],
+            "title": "Status",
+            "description": "\u30b9\u30c6\u30fc\u30bf\u30b9"
+          },
+          "reason_memo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason Memo",
+            "description": "\u9078\u5b9a\u7406\u7531\u30e1\u30e2"
+          },
+          "created_by": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Created By",
+            "description": "\u767b\u9332\u8005ID"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At",
+            "description": "\u767b\u9332\u65e5\u6642"
+          },
+          "approved_by": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved By",
+            "description": "\u627f\u8a8d\u8005ID"
+          },
+          "approved_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved At",
+            "description": "\u627f\u8a8d/\u5374\u4e0b\u65e5\u6642"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "company_id",
+          "securities_code",
+          "name",
+          "industry",
+          "status",
+          "created_by",
+          "created_at"
+        ],
+        "title": "LonglistItemSchema",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u4e00\u89a7\u306e1\u9805\u76ee\uff08P003 \u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u753b\u9762\u7528\uff09."
+      },
+      "LonglistListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/LonglistItemSchema"
+            },
+            "type": "array",
+            "title": "Items",
+            "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u9805\u76ee\u4e00\u89a7"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total",
+            "description": "\u7dcf\u4ef6\u6570"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total"
+        ],
+        "title": "LonglistListResponse",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u4e00\u89a7\u30ec\u30b9\u30dd\u30f3\u30b9."
+      },
+      "LonglistUpdateRequest": {
+        "properties": {
+          "reason_memo": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason Memo",
+            "description": "\u9078\u5b9a\u7406\u7531\u30e1\u30e2\uff08\u6700\u5927500\u6587\u5b57\uff09"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "candidate",
+                  "approved",
+                  "rejected"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "description": "\u30b9\u30c6\u30fc\u30bf\u30b9"
+          }
+        },
+        "type": "object",
+        "title": "LonglistUpdateRequest",
+        "description": "\u30ed\u30f3\u30b0\u30ea\u30b9\u30c8\u30e1\u30e2\u30fb\u30b9\u30c6\u30fc\u30bf\u30b9\u66f4\u65b0\u30ea\u30af\u30a8\u30b9\u30c8."
       },
       "MeResponse": {
         "properties": {

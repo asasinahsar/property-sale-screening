@@ -27,3 +27,19 @@ async def auth_cookies(analyst_user):
     """有効な access_token Cookie を生成"""
     token = create_access_token({"sub": str(analyst_user.id)})
     return {"access_token": token}
+
+
+@pytest.fixture
+async def manager_user():
+    """シードされた manager ユーザーを取得"""
+    async with AsyncSessionLocal() as session:
+        repo = UserRepository(session)
+        user = await repo.get_by_email("manager@example.com")
+        return user
+
+
+@pytest.fixture
+async def manager_cookies(manager_user):
+    """manager ロールの access_token Cookie を生成"""
+    token = create_access_token({"sub": str(manager_user.id)})
+    return {"access_token": token}

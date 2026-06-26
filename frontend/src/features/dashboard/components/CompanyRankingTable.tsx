@@ -14,6 +14,7 @@ import {
   Paper,
 } from '@mui/material'
 import type { CompanyRankingItemSchema, ConfidenceLevel } from '@/features/companies'
+import { AddToLonglistButton } from '@/features/longlist'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -55,6 +56,7 @@ const COLUMNS = [
   '含み益',
   '確信度',
   'イベント',
+  '操作',
 ] as const
 
 // ---------------------------------------------------------------------------
@@ -154,6 +156,9 @@ export function CompanyRankingTable({
                   size="small"
                   color={item.has_event ? 'primary' : 'default'}
                 />
+              </TableCell>
+              <TableCell onClick={(e) => e.stopPropagation()}>
+                <AddToLonglistButton companyId={item.company_id} />
               </TableCell>
             </TableRow>
           ))}

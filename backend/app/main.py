@@ -3,7 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.endpoints import auth, companies, dashboard, files, screenings, users
+from app.api.v1.endpoints import (
+    auth,
+    companies,
+    dashboard,
+    files,
+    longlist,
+    screenings,
+    users,
+)
 from app.core.config import settings
 from app.core.database import AsyncSessionLocal
 from app.core.dependencies import get_db
@@ -30,6 +38,7 @@ app.include_router(dashboard.router)
 app.include_router(screenings.router)
 app.include_router(companies.router)
 app.include_router(files.router)
+app.include_router(longlist.router)
 
 
 @app.get("/health", tags=["Health"])

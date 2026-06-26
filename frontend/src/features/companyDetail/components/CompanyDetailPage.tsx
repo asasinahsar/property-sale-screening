@@ -11,6 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 
+import { AddToLonglistButton } from "@/features/longlist";
+
 import { useCompanyDetail, useGenerateReport } from "../hooks";
 
 interface CompanyDetailPageProps {
@@ -79,14 +81,17 @@ export function CompanyDetailPage({ company_id }: CompanyDetailPageProps) {
               </Typography>
             )}
           </Box>
-          <Button
-            variant="contained"
-            onClick={handleGenerateReport}
-            disabled={isGenerating}
-            aria-label="PDFレポートを出力"
-          >
-            PDFレポートを出力
-          </Button>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <AddToLonglistButton companyId={company_id} variant="outlined" size="medium" />
+            <Button
+              variant="contained"
+              onClick={handleGenerateReport}
+              disabled={isGenerating}
+              aria-label="PDFレポートを出力"
+            >
+              PDFレポートを出力
+            </Button>
+          </Stack>
         </Stack>
       </Box>
 
