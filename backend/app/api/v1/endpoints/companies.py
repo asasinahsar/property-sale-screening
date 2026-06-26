@@ -24,7 +24,7 @@ from app.api.v1.schemas.scoring import (
     ConfidenceLevelEnum,
 )
 from app.core.dependencies import get_db
-from app.models.company import Company, QualitativeSignal
+from app.models.company import Company, FinancialData, QualitativeSignal
 from app.models.screening import ScreeningRun, ScoringResult
 from app.models.user import User
 from app.repositories.company_detail_repository import CompanyDetailRepository
@@ -126,6 +126,16 @@ async def get_companies(
     total_result = await db.execute(count_stmt)
     total = total_result.scalar_one()
 
+    # 企業ごとの最新財務データ（as_of_date 最大）を取得するサブクエリ
+    latest_fd_subq = (
+        select(
+            FinancialData.company_id,
+            func.max(FinancialData.as_of_date).label("max_date"),
+        )
+        .group_by(FinancialData.company_id)
+        .subquery()
+    )
+
     # データ取得
     offset = (page - 1) * page_size
     data_stmt = (
@@ -133,8 +143,21 @@ async def get_companies(
             Company,
             ScoringResult,
             has_event_subq.label("has_event"),
+            FinancialData.unrealized_gain,
+            FinancialData.pbr,
         )
         .join(ScoringResult, ScoringResult.company_id == Company.id)
+        .outerjoin(
+            latest_fd_subq,
+            latest_fd_subq.c.company_id == Company.id,
+        )
+        .outerjoin(
+            FinancialData,
+            and_(
+                FinancialData.company_id == Company.id,
+                FinancialData.as_of_date == latest_fd_subq.c.max_date,
+            ),
+        )
         .where(and_(*base_conditions))
         .order_by(sort_col.desc())
         .offset(offset)
@@ -159,10 +182,13 @@ async def get_companies(
             if scoring.event_boost is not None
             else None,
             confidence=ConfidenceLevelEnum(scoring.confidence),
-            unrealized_gain=None,  # FinancialData は JOIN していないため暫定 None
+            unrealized_gain=float(unrealized_gain)
+            if unrealized_gain is not None
+            else None,
+            pbr=float(pbr) if pbr is not None else None,
             has_event=bool(he),
         )
-        for company, scoring, he in results
+        for company, scoring, he, unrealized_gain, pbr in results
     ]
 
     return CompanyListResponse(

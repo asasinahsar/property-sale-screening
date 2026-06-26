@@ -5,8 +5,9 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Alert, Box, Button, Paper, Stack, Typography } from '@mui/material'
 
-import { useGetDashboardKpi } from '../hooks'
+import { useGetDashboardKpi, useRecentEvents } from '../hooks'
 import { DashboardKpiSection } from './DashboardKpiSection'
+import { RecentEventsBanner } from './RecentEventsBanner'
 import { ScreeningButton } from './ScreeningButton'
 import { CompanyRankingTable } from './CompanyRankingTable'
 import { SearchBox } from './SearchBox'
@@ -57,6 +58,7 @@ export function DashboardContent() {
   )
 
   const { data: kpiData, isLoading: kpiLoading } = useGetDashboardKpi()
+  const { data: recentEvents, isLoading: recentEventsLoading } = useRecentEvents()
   const { data: companiesData, isLoading: companiesLoading } = useCompanies(
     filters,
     { enabled: searchParams === null },
@@ -132,6 +134,11 @@ export function DashboardContent() {
       )}
 
       <DashboardKpiSection data={kpiData} isLoading={kpiLoading} />
+
+      <RecentEventsBanner
+        events={recentEvents ?? []}
+        isLoading={recentEventsLoading}
+      />
 
       <Paper variant="outlined" sx={{ p: 2 }}>
         <Typography variant="subtitle2" color="text.secondary" gutterBottom>

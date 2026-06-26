@@ -6,12 +6,18 @@
 
 import asyncio
 import uuid
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from sqlalchemy import select, text
 
 from app.core.database import AsyncSessionLocal
-from app.models.company import Company, Document, FinancialData, QualitativeSignal
+from app.models.company import (
+    Company,
+    Document,
+    Event,
+    FinancialData,
+    QualitativeSignal,
+)
 
 
 DEMO_COMPANIES = [
@@ -118,6 +124,14 @@ DEMO_SIGNALS = [
         "quote_text": "当社は保有物件を長期保有方針とし、売却の予定はありません。",
         "source_page": 3,
     },
+]
+
+# 直近イベント（occurred_at は実行日からの相対日数で「直近7日以内」に収める）
+DEMO_EVENTS = [
+    {"company_code": "1234", "event_type": "new_disclosure", "days_ago": 1},
+    {"company_code": "2345", "event_type": "large_shareholding", "days_ago": 2},
+    {"company_code": "4567", "event_type": "new_disclosure", "days_ago": 4},
+    {"company_code": "5678", "event_type": "large_shareholding", "days_ago": 6},
 ]
 
 
@@ -229,6 +243,44 @@ async def seed():
             )
             session.add(sig)
             print(f"  INSERT signal: {code} / {sig_data['signal_type']} ({sig_data['stance']})")
+
+        await session.commit()
+
+        # 直近イベントを投入（直近イベントバナー用）
+        today = date.today()
+        for ev_data in DEMO_EVENTS:
+            code = ev_data["company_code"]
+            company_id = company_id_map.get(code)
+            if company_id is None:
+                continue
+
+            occurred_at = today - timedelta(days=ev_data["days_ago"])
+
+            # 重複しないよう確認（同一企業・種別・発生日）
+            existing_ev = await session.execute(
+                select(Event).where(
+                    Event.company_id == company_id,
+                    Event.event_type == ev_data["event_type"],
+                    Event.occurred_at == occurred_at,
+                )
+            )
+            if existing_ev.scalar_one_or_none() is not None:
+                print(f"  SKIP event (already exists): {code} / {ev_data['event_type']}")
+                continue
+
+            event = Event(
+                id=uuid.uuid4(),
+                company_id=company_id,
+                document_id=None,
+                event_type=ev_data["event_type"],
+                occurred_at=occurred_at,
+                created_at=now,
+            )
+            session.add(event)
+            print(
+                f"  INSERT event: {code} / {ev_data['event_type']} "
+                f"(occurred_at={occurred_at})"
+            )
 
         await session.commit()
         print("\n✅ シードデータ投入完了")

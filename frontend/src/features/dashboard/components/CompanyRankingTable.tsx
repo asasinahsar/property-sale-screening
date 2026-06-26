@@ -31,11 +31,11 @@ export interface CompanyRankingTableProps {
 
 const CONFIDENCE_COLORS: Record<
   ConfidenceLevel,
-  'success' | 'warning' | 'error'
+  'success' | 'warning' | 'default'
 > = {
   high: 'success',
   mid: 'warning',
-  low: 'error',
+  low: 'default',
 }
 
 function fmt(value: number, digits = 1): string {
@@ -54,6 +54,7 @@ const COLUMNS = [
   '構造スコア',
   'イベントスコア',
   '含み益',
+  'PBR',
   '確信度',
   'イベント',
   '操作',
@@ -105,7 +106,7 @@ export function CompanyRankingTable({
               <TableCell
                 key={col}
                 align={
-                  ['総合スコア', '構造スコア', 'イベントスコア', '含み益'].includes(
+                  ['総合スコア', '構造スコア', 'イベントスコア', '含み益', 'PBR'].includes(
                     col,
                   )
                     ? 'right'
@@ -141,6 +142,9 @@ export function CompanyRankingTable({
               <TableCell align="right">{fmt(item.event_score)}</TableCell>
               <TableCell align="right">
                 {item.unrealized_gain != null ? item.unrealized_gain.toLocaleString() : '—'}
+              </TableCell>
+              <TableCell align="right">
+                {item.pbr != null ? item.pbr.toFixed(2) : '—'}
               </TableCell>
               <TableCell>
                 <Chip

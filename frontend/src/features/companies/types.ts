@@ -27,6 +27,7 @@ export interface CompanyRankingItemSchema {
   event_score: number
   event_boost: number | null
   unrealized_gain: number | null
+  pbr: number | null
   confidence: ConfidenceLevel
   has_event: boolean
 }

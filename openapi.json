@@ -1356,6 +1356,60 @@
         }
       }
     },
+    "/api/v1/events/recent": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Get Recent Events",
+        "description": "\u76f4\u8fd1 7 \u65e5\u306e\u30a4\u30d9\u30f3\u30c8\u3092 occurred_at \u964d\u9806\u3067\u6700\u5927 10 \u4ef6\u8fd4\u3059.",
+        "operationId": "get_recent_events_api_v1_events_recent_get",
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Access Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecentEventSchema"
+                  },
+                  "title": "Response Get Recent Events Api V1 Events Recent Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "tags": [
@@ -1640,6 +1694,18 @@
             ],
             "title": "Unrealized Gain",
             "description": "\u542b\u307f\u76ca\uff08\u5104\u5186\uff09"
+          },
+          "pbr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pbr",
+            "description": "PBR\uff08\u682a\u4fa1\u7d14\u8cc7\u7523\u500d\u7387\uff09"
           },
           "has_event": {
             "type": "boolean",
@@ -2582,6 +2648,63 @@
         ],
         "title": "QualitativeSignalDetailSchema",
         "description": "\u5b9a\u6027\u30b7\u30b0\u30ca\u30eb\u306e\u8a73\u7d30\u60c5\u5831\uff08\u6839\u62e0\u30ec\u30dd\u30fc\u30c8\u8868\u793a\u7528\uff09."
+      },
+      "RecentEventSchema": {
+        "properties": {
+          "company_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Company Id",
+            "description": "\u4f01\u696dID"
+          },
+          "securities_code": {
+            "type": "string",
+            "maxLength": 10,
+            "minLength": 1,
+            "title": "Securities Code",
+            "description": "\u8a3c\u5238\u30b3\u30fc\u30c9"
+          },
+          "company_name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Company Name",
+            "description": "\u4f01\u696d\u540d"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type",
+            "description": "\u30a4\u30d9\u30f3\u30c8\u7a2e\u5225\uff08new_disclosure / large_shareholding\uff09"
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date",
+            "title": "Occurred At",
+            "description": "\u30a4\u30d9\u30f3\u30c8\u767a\u751f\u65e5"
+          },
+          "event_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Score",
+            "description": "\u73fe\u884c\u30b9\u30af\u30ea\u30fc\u30cb\u30f3\u30b0\u306e\u30a4\u30d9\u30f3\u30c8\u30b9\u30b3\u30a2\uff080\u2013100\uff09"
+          }
+        },
+        "type": "object",
+        "required": [
+          "company_id",
+          "securities_code",
+          "company_name",
+          "event_type",
+          "occurred_at"
+        ],
+        "title": "RecentEventSchema",
+        "description": "\u76f4\u8fd1\u30a4\u30d9\u30f3\u30c8\u30d0\u30ca\u30fc\u306e 1 \u30a8\u30f3\u30c8\u30ea."
       },
       "ReportGenerateRequest": {
         "properties": {

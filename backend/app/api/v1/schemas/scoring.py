@@ -272,6 +272,7 @@ class CompanyRankingItemSchema(BaseModel):
     )
     confidence: ConfidenceLevelEnum = Field(..., description="信頼度レベル")
     unrealized_gain: float | None = Field(default=None, description="含み益（億円）")
+    pbr: float | None = Field(default=None, description="PBR（株価純資産倍率）")
     has_event: bool = Field(..., description="イベントシグナルが1件以上あるか")
 
 
